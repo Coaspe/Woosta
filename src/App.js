@@ -1,25 +1,60 @@
-import logo from './logo.svg';
-import './App.css';
+import { lazy, Suspense } from "react";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import * as ROUTES from "./constants/routes";
+import UserContext from "./context/user";
+import useAuthListner from "./hooks/use-auth-listener";
+import ProtectedRoute from "./helpers/Protected.route";
+import IsUserLoggedIn from "./helpers/Is-user-logged-in";
+import "./dfd.css";
 
-function App() {
+// lazy code spliting
+// Loadtest
+const Login = lazy(() => import("./pages/Login"));
+const Signup = lazy(() => import("./pages/Signup"));
+const Dashboard = lazy(() => import("./pages/Dashboard"));
+const Profile = lazy(() => import("./pages/Profile"));
+const NotFound = lazy(() => import("./pages/Not-found"));
+const Posting = lazy(() => import("./pages/Posting"));
+
+const App = () => {
+  const { user } = useAuthListner();
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <UserContext.Provider value={{ user }}>
+      <Router>
+        {/* lazy function need Suspense */}
+        <Suspense fallback={<p>Loading...</p>}>
+          <Switch>
+            <IsUserLoggedIn
+              user={user}
+              loggedInPath={ROUTES.DASHBOARD}
+              path={ROUTES.LOGIN}
+            >
+              <Login />
+            </IsUserLoggedIn>
+            <IsUserLoggedIn
+              user={user}
+              loggedInPath={ROUTES.DASHBOARD}
+              path={ROUTES.SIGH_UP}
+            >
+              <Signup />
+            </IsUserLoggedIn>
+            <Route path={ROUTES.PROFILE} component={Profile} />
+            <ProtectedRoute user={user} path={ROUTES.DASHBOARD} exact>
+              <Dashboard />
+            </ProtectedRoute>
+            <ProtectedRoute user={user} path={ROUTES.POSTING} exact>
+              <Posting />
+            </ProtectedRoute>
+            <Route component={NotFound} />
+          </Switch>
+        </Suspense>
+      </Router>
+    </UserContext.Provider>
   );
-}
+};
 
+// react-loading-skeleton
+// firebase
+// date-fns
 export default App;
