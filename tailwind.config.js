@@ -16,10 +16,13 @@ module.exports = {
       blue: {
         medium: "#00A2F8",
         facebook: "#385185",
+        signupBtn: "#0095F6",
+        aa: "#385899",
       },
       black: {
         light: "#262626",
         faded: "#00000059",
+        normal: "#0000000",
       },
       gray: {
         base: "#616161",

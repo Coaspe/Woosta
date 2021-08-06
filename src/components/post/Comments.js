@@ -226,10 +226,9 @@ const Comments = ({ docId, comments: allComments, posted, commentInput }) => {
         onRequestClose={closeModal}
         style={customStyles}
         contentLabel="Example Modal"
-        className="font-stix"
       >
         {editOrDelete === "DELETE" ? (
-          <div className="flex flex-col justify-center items-center">
+          <div className="flex flex-col justify-center items-center font-stix">
             <span className="text-2xl mb-10">Delete Comment</span>
             <div className="flex w-full rounded-sm border border-gray-primary p-2">
               <span className="mr-3 font-bold text-xl">{user.displayName}</span>

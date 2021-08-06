@@ -23,7 +23,17 @@ const App = () => {
     <UserContext.Provider value={{ user }}>
       <Router>
         {/* lazy function need Suspense */}
-        <Suspense fallback={<p>Loading...</p>}>
+        <Suspense
+          fallback={
+            <div className="w-screen h-screen flex items-center justify-center">
+              <img
+                className="w-14 opacity-50"
+                src="/images/loading.png"
+                alt="loading"
+              />
+            </div>
+          }
+        >
           <Switch>
             <IsUserLoggedIn
               user={user}

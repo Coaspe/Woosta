@@ -14,7 +14,7 @@ const Posting = () => {
   const [next, setNext] = useState(false);
   const [caption, setCaption] = useState("");
   const [file, setFile] = useState("");
-  const [previewURL, setPriviewURL] = useState("/images/image.png");
+  const [previewURL, setPriviewURL] = useState("/images/gallery.png");
 
   const handleFileOnChange = (event) => {
     event.preventDefault();
@@ -27,11 +27,11 @@ const Posting = () => {
     reader.readAsDataURL(file);
   };
   return (
-    <div className="bg-gray-background">
+    <div className="bg-gray-background font-stix font-thin">
       <Header />
       <div className="grid grid-cols-3 gap-4 justify-between mx-auto max-w-screen-lg">
         {!next ? (
-          <div className="container col-span-2 flex flex-col items-center">
+          <div className="container col-span-2  flex flex-col items-center">
             <img
               className="w-1/2 rounded-md"
               src={previewURL}
@@ -43,7 +43,7 @@ const Posting = () => {
                 className="pt-2 pb-2 pl-3 pr-3 mr-2 mt-2 w-1/6 text-center bg-blue-medium rounded-md text-white cursor-pointer"
                 for="input-file"
               >
-                사진 찾기
+                Explore Photos
               </label>
               <form ref={imageValue}>
                 <input
@@ -59,14 +59,16 @@ const Posting = () => {
               </form>
               <button
                 className={`pt-2 pb-2 pl-3 pr-3 mt-2 w-1/6 text-center ${
-                  previewURL !== "/images/image.png"
+                  previewURL !== "/images/gallery.png"
                     ? "bg-blue-medium"
                     : "bg-gray-base"
                 } rounded-md text-white cursor-pointer`}
-                disabled={{ previewURL } === "/images/image.png" ? true : false}
+                disabled={
+                  { previewURL } === "/images/gallery.png" ? true : false
+                }
                 onClick={() => setNext(true)}
               >
-                다음
+                Next
               </button>
             </div>
           </div>
@@ -98,7 +100,7 @@ const Posting = () => {
                   history.push("/");
                 }}
               >
-                제출
+                Submit
               </button>
             </div>
           </div>

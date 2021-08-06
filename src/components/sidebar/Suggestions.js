@@ -33,7 +33,7 @@ const Suggestion = ({ userId, following, loggedInUserDocId }) => {
     <Skeleton count={10} height={150} className="mt-5" />
   ) : profiles.length > 0 ? (
     <motion.div
-      className="rounede flex flex-col"
+      className="rouneded flex flex-col w-3/6"
       variants={postVariant}
       initial="initial"
       animate="animate"
@@ -41,7 +41,7 @@ const Suggestion = ({ userId, following, loggedInUserDocId }) => {
       <div className="text-sm flex items-center align-items justify-between mb-2">
         <p className="font-bold text-gray-base">Suggestions for you</p>
       </div>
-      <div className="mt-4 grid gap-5">
+      <div className="mt-2 grid gap-4">
         {profiles.map((profile) => (
           <SuggestedProfile
             key={profile.docId}
@@ -52,6 +52,12 @@ const Suggestion = ({ userId, following, loggedInUserDocId }) => {
             loggedInUserDocId={loggedInUserDocId}
           />
         ))}
+      </div>
+      <div>
+        <p className="text-xs opacity-50 mt-4">
+          About - Help - Press - API- Jobs- Privacy - Terms - Locations Top
+          Accounts - Hashtags - Language English © 2021 WOOSTAGRAM
+        </p>
       </div>
     </motion.div>
   ) : null;

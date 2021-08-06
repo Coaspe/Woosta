@@ -52,7 +52,7 @@ const Header = ({ username, reference, docId }) => {
           </Button>
         </Modal.Footer>
       </Modal>
-      <div className="flex border-b border-gray-primary h-4 p-4 py-8 justify-between items-center font-stix">
+      <div className="flex border-b border-gray-primary h-4 px-4 py-7 justify-between items-center font-stix">
         <div className="flex items-center">
           <Link to={`/p/${username}`} className="flex items-center">
             <motion.img
@@ -76,7 +76,7 @@ const Header = ({ username, reference, docId }) => {
           </Dropdown.Toggle>
 
           <Dropdown.Menu className="bg-white rounded-sm border">
-            {username === user.displayName ? (
+            {username === user.displayName.toLowerCase() ? (
               <>
                 <Dropdown.Item
                   className=""

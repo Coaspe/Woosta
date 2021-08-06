@@ -39,7 +39,7 @@ const Photos = ({ photos }) => {
           photos.map((photo, idx) => (
             <motion.div
               key={photo.docId}
-              className="relative group h-80 justify-center cursor-pointer"
+              className="relative group justify-center cursor-pointer lg:h-80 md:h-60 sm:h-40"
               variants={postVariant}
               initial="initial"
               animate="animate"

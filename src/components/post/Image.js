@@ -1,19 +1,12 @@
 import propTypes from "prop-types";
 import * as React from "react";
-import {
-  motion,
-  useMotionValue,
-  useTransform,
-  useAnimation,
-} from "framer-motion";
-import { useDimensions } from "../../menu-animation/use-dimensions";
-import { useEffect, useState } from "react";
+import { motion, useMotionValue, useAnimation } from "framer-motion";
 
 const Image = ({ src, caption, heartRef, handleClick, docId }) => {
   const animation = useAnimation();
+  const imgAnimation = useAnimation();
+
   const x = useMotionValue(0);
-  const tickPath = useTransform(x, [-200, 0, 200], [1, 0, 1]);
-  const fillOpacity = useTransform(x, [-200, 0, 200], [1, 1, 1]);
   const va = {
     hidden: {
       opacity: 0,
@@ -26,25 +19,34 @@ const Image = ({ src, caption, heartRef, handleClick, docId }) => {
     },
   };
   async function sequence() {
+    imgAnimation.start({ opacity: 0.6 });
     await animation.start({ opacity: 1 });
     await animation.start({ scale: 1.5 });
     await animation.start({ scale: 1 });
     await animation.start({ scale: 1.5 });
     animation.start({ scale: 0.1 });
-    await animation.start({ opacity: 0 });
+    animation.start({ opacity: 0 });
+    imgAnimation.start({ opacity: 1 });
     animation.start({ scale: 1 });
+
     heartRef.current.click();
   }
-  useEffect(() => {}, []);
+
   return (
-    <motion.div className="flex items-center justify-center">
+    <motion.div
+      className="flex items-center justify-center"
+      variants={va}
+      initial="hidden"
+      animate="visible"
+    >
       <motion.img
-        variants={va}
-        initial="hidden"
-        animate="visible"
-        onDoubleClick={sequence}
+        animate={imgAnimation}
+        onDoubleClick={() => {
+          sequence();
+        }}
         src={src}
         alt={caption}
+        className="w-full"
       />
       <motion.div
         className="absolute w-96 h-96 flex justify-center items-center"
@@ -62,7 +64,7 @@ const Image = ({ src, caption, heartRef, handleClick, docId }) => {
           <motion.path
             opacity="0"
             animate={animation}
-            fill="red"
+            fill="white"
             d="M12 4.435c-1.989-5.399-12-4.597-12 3.568 0 4.068 3.06 9.481 12 14.997 8.94-5.516 12-10.929 12-14.997 0-8.118-10-8.999-12-3.568z"
           />
         </motion.svg>

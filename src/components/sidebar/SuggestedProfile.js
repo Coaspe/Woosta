@@ -1,9 +1,10 @@
 import propTypes from "prop-types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   updateLoggedInUserFollowing,
   updateFollowedUserFollowers,
+  getUserProflieImgByUsername,
 } from "../../services/firebase";
 const SuggestedProfile = ({
   profileDocId,
@@ -13,6 +14,7 @@ const SuggestedProfile = ({
   loggedInUserDocId,
 }) => {
   const [followed, setFollowed] = useState(false);
+  const [profileImg, setProfileImg] = useState("");
 
   async function handleFollowUser() {
     setFollowed(true);
@@ -24,16 +26,26 @@ const SuggestedProfile = ({
     // update the followers array of the user who has been followed
   }
 
+  useEffect(() => {
+    const userProfileImg = async () => {
+      const img = await getUserProflieImgByUsername(username);
+      setProfileImg(img);
+    };
+    userProfileImg();
+  }, [username]);
+
   return !followed ? (
     <div className="flex flex-row items-center align-items justify-between">
       <div className="flex items-center justify-between">
-        <img
-          className="rounded-full w-8 flex mr-3"
-          src={`/images/avatars/${username}.jpg`}
-          alt=""
-        />
+        <div className="w-10 h-10 relative overflow-hidden rounded-full mr-2">
+          <img
+            className="rounded-fullinline my-auto w-10"
+            src={profileImg ? profileImg : "/images/user.png"}
+            alt="Suggestion"
+          />
+        </div>
         <Link to={`/p/${username}`}>
-          <p className="font-bold text-sm">{username}</p>
+          <p className="font-bold">{username}</p>
         </Link>
       </div>
       <div>

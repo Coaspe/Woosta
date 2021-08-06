@@ -9,12 +9,14 @@ const Sidebar = () => {
   const x = useUser(user?.uid);
   return (
     <div className="p-4 font-stix">
-      <User username={x.user?.username} fullName={x.user?.fullName} />
-      <Suggestion
-        userId={x.user?.userId}
-        following={x.user?.following}
-        loggedInUserDocId={x.user?.docId}
-      />
+      <div className="fixed">
+        <User username={x.user?.username} fullName={x.user?.fullName} />
+        <Suggestion
+          userId={x.user?.userId}
+          following={x.user?.following}
+          loggedInUserDocId={x.user?.docId}
+        />
+      </div>
     </div>
   );
 };

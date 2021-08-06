@@ -31,7 +31,7 @@ const Login = () => {
   }, []);
 
   return (
-    <div className="container flex mx-auto max-w-screen-md items-center h-screen">
+    <div className="container flex mx-auto max-w-screen-md items-center h-screen font-stix">
       <link
         rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
@@ -81,7 +81,7 @@ const Login = () => {
           </Carousel.Item>
         </Carousel>
       </div>
-      <div className="flex flex-col w-2/6 ml-32">
+      <div className="flex flex-col w-3/12 ml-32">
         <div className="flex flex-col items-center bg-white p-4 border border-gray-primary mb-4 rounded">
           <h1 className="flex justify-center w-full">
             <img
@@ -100,7 +100,7 @@ const Login = () => {
               aria-label="Enter your email address"
               type="text"
               placeholder="Email Address"
-              className="text-sm text-gray-base w-11/12 py-4 px-2 h-2
+              className="text-sm text-gray-base w-11/12 py-3 px-2 h-2
             border border-gray-primary rounded mb-2"
               autoComplete="username"
               onChange={({ target }) => {
@@ -111,7 +111,7 @@ const Login = () => {
               aria-label="Enter your password"
               type="password"
               placeholder="Password"
-              className="text-sm text-gray-base w-11/12 py-4 px-2 h-2
+              className="text-sm text-gray-base w-11/12 py-3 px-2 h-2
             border border-gray-primary rounded mb-2"
               autoComplete="current-password"
               onChange={({ target }) => setPassword(target.value)}
@@ -119,7 +119,7 @@ const Login = () => {
             <button
               disabled={isInvalid}
               type="submit"
-              className={`bg-blue-medium text-white w-11/12 rounded h-8 font-bold
+              className={`bg-blue-medium text-white w-11/12 rounded h-7 text-sm
               ${isInvalid && "opacity-50"}`}
             >
               Log In
@@ -127,9 +127,16 @@ const Login = () => {
           </form>
           <div className="flex flex-col items-center">
             <p className="mt-3 text-sm text-gray-postBorder">OR</p>
-            <p className="mb-3 text-blue-facebook font-bold">
-              Log in with Facebook
-            </p>
+            <div className="flex items-center justify-center mb-3">
+              <img
+                className="w-4 mr-1.5 bg-blue-aa rounded-sm"
+                src="/images/apple-icon-57x57.png"
+                alt="facebook icon"
+              />
+              <p className="text-blue-facebook font-bold mb-0">
+                Log in with Facebook
+              </p>
+            </div>
             <p className="text-xs mb-0 text-blue-facebook">Forgot password?</p>
           </div>
         </div>

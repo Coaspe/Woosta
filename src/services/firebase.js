@@ -13,7 +13,7 @@ export async function getUserByUsername(username) {
   const result = await firebase
     .firestore()
     .collection("users")
-    .where("username", "==", username)
+    .where("username", "==", username.toLowerCase())
     .get();
 
   return result.docs.map((item) => ({
@@ -92,6 +92,7 @@ export async function getPhotos(userId, following) {
     .collection("photos")
     .where("userId", "in", following)
     .get();
+
   const result2 = await firebase
     .firestore()
     .collection("photos")
@@ -163,15 +164,19 @@ export async function uploadImage(caption, ImageUrl, userInfo) {
     .child(`${userInfo.email}/${ImageUrl.name}`)
     .getDownloadURL();
 
-  await firebase.firestore().collection("photos").add({
-    caption: caption,
-    comments: [],
-    dateCreated: Date.now(),
-    imageSrc: imageAccessToken,
-    photoId: ImageUrl.name,
-    likes: [],
-    userId: userInfo.uid,
-  });
+  await firebase
+    .firestore()
+    .collection("photos")
+    .add({
+      caption: caption,
+      comments: [],
+      dateCreated: Date.now(),
+      imageSrc: imageAccessToken,
+      photoId: ImageUrl.name,
+      likes: [],
+      userId: userInfo.uid,
+    })
+    .then(() => window.location.reload());
 }
 export async function getImage(ImagePath) {
   await storageRef

@@ -32,12 +32,9 @@ const User = ({ username, fullName }) => {
   return !username || !fullName ? (
     <Skeleton count={1} height={61} />
   ) : (
-    <Link
-      to={`p/${username}`}
-      className="grid grid-cols-4 gap-4 mb-6 items-center"
-    >
+    <Link to={`p/${username}`} className="flex mb-6 items-center">
       <motion.div
-        className="flex items-center justify-between col-span-1"
+        className="mr-3"
         variants={postVariant}
         initial="initial"
         animate="animate"
@@ -45,16 +42,11 @@ const User = ({ username, fullName }) => {
         <img
           id="userProfile"
           src={imgimg ? imgimg : "/images/user.png"}
-          className="rounded-full w-16 flex mr-3"
+          className="rounded-full w-16 flex"
           alt="12"
         />
       </motion.div>
-      <motion.div
-        className="col-span-3"
-        variants={postVariant}
-        initial="initial"
-        animate="animate"
-      >
+      <motion.div variants={postVariant} initial="initial" animate="animate">
         <span
           className="font-bold text-lg"
           style={{
