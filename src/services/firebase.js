@@ -50,12 +50,15 @@ export async function getSuggestedProfiles(userId, following) {
         profile.userId !== userId && !following.includes(profile.userId)
     );
 }
+export async function getFollowingProfiles(following) {
+  return await Promise.all(following.map((person) => getUserByUserId(person)));
+}
 
 //  updateLoggedInUserFollowing, updateFollowedUserFollowers
 
 export async function updateLoggedInUserFollowing(
-  loggedInUserDocId,
-  profileId,
+  loggedInUserDocId, //currently logged in user document id
+  profileId, // the user that someone requests to follow
   isFollowingProfile
 ) {
   return firebase
@@ -156,9 +159,7 @@ export async function isUserFollowingProfile(
   return response.userId;
 }
 export async function uploadImage(caption, ImageUrl, userInfo) {
-  const result = await storageRef
-    .child(`${userInfo.email}/${ImageUrl.name}`)
-    .put(ImageUrl);
+  await storageRef.child(`${userInfo.email}/${ImageUrl.name}`).put(ImageUrl);
 
   const imageAccessToken = await storageRef
     .child(`${userInfo.email}/${ImageUrl.name}`)

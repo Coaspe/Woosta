@@ -7,6 +7,7 @@ import {
   toggleFollow,
   getUserProflieImgByUsername,
   getUserByUsername,
+  getFollowingProfiles,
 } from "../../services/firebase";
 import UserContext from "../../context/user";
 import FirebaseContext from "../../context/firebase";
@@ -16,7 +17,7 @@ import Dropdown from "react-bootstrap/Dropdown";
 import { motion } from "framer-motion";
 import { makeStyles } from "@material-ui/core/styles";
 import Input from "@material-ui/core/Input";
-
+import Following from "./Following";
 const Header = ({
   photosCount,
   profile: {
@@ -48,11 +49,11 @@ const Header = ({
   const [file, setFile] = useState("");
   const imageValue = useRef(null);
   const { firebase, storageRef } = useContext(FirebaseContext);
-
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
+  const [followingCount, setFollowingCount] = useState(following.length);
   const [showEdit, setShowEdit] = useState(false);
   const handleEditClose = () => setShowEdit(false);
   const handleEditShow = () => setShowEdit(true);
@@ -64,6 +65,7 @@ const Header = ({
   const [showFollowing, setShowFollowing] = useState(false);
   const handleFollowingClose = () => setShowFollowing(false);
   const handleFollowingShow = () => setShowFollowing(true);
+  const [asd, setAsd] = useState([]);
 
   useEffect(() => {
     const profileImg = async () => {
@@ -93,6 +95,23 @@ const Header = ({
     }
   }, [user?.username, profileUserId]);
 
+  useEffect(() => {
+    const followingProfile = async (arg) => {
+      await getFollowingProfiles(arg).then((res) => setAsd(res));
+    };
+
+    if (following !== []) {
+      followingProfile(following);
+      setFollowingCount(following.length);
+    }
+  }, [following.length]);
+
+  useEffect(() => {
+    if (asd.length > 0) {
+      asd.map((el) => console.log(el[0].username));
+    }
+  }, [asd]);
+
   const handleToggleFollow = async () => {
     setIsFollowingProfile((isFollowingProfile) => !isFollowingProfile);
     setFollowerCount({
@@ -106,6 +125,7 @@ const Header = ({
       user.userId
     );
   };
+
   const handleFileOnChange = (event) => {
     event.preventDefault();
     let reader = new FileReader();
@@ -122,6 +142,7 @@ const Header = ({
       profileCaption: editCaption,
     });
   };
+
   return (
     <div className="grid grid-cols-3 gap-4 justify-between mx-auto max-w-screen-lg font-stix">
       <Modal centered show={show} onHide={handleClose}>
@@ -241,7 +262,6 @@ const Header = ({
       >
         <img src={imgimg} alt="Wide" className="rounded" />
       </Modal>
-
       <Modal
         show={showFollowing}
         onHide={handleFollowingClose}
@@ -254,7 +274,22 @@ const Header = ({
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <p className="font-stix">Following</p>
+          {asd.length === following.length && followingCount > 0 ? (
+            asd.map((el) => (
+              <Following
+                profileDocId={el[0].docId}
+                username={el[0].username}
+                profileId={el[0].userId}
+                userId={contextUser.uid}
+                loggedInUserDocId={user.docId}
+                setFollowingCount={setFollowingCount}
+              />
+            ))
+          ) : (
+            <p className="font-stix text-2xl text-center py-8">
+              Follow Someone!
+            </p>
+          )}
           <Modal.Footer>
             <Button variant="secondary" onClick={handleFollowingClose}>
               Close
@@ -348,7 +383,7 @@ const Header = ({
                 {followerCount === 1 ? "follower" : "followers"}
               </p>
               <p className="mr-10 cursor-pointer" onClick={handleFollowingShow}>
-                <span className="font-bold">{following.length}</span>
+                <span className="font-bold">{followingCount}</span>
                 <span> following</span>
               </p>
             </>
