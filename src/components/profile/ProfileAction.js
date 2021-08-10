@@ -5,8 +5,17 @@ import UserContext from "../../context/user";
 import { motion, useAnimation } from "framer-motion";
 import { useEffect } from "react";
 import Skeleton from "react-loading-skeleton";
+import AddComments from "../post/Add-comment";
+import { formatDistance } from "date-fns";
 
-const Actions = ({ docId, totlaLikes, likedPhoto, handleFocus, heartRef }) => {
+const ProfileAction = ({
+  docId,
+  totlaLikes,
+  likedPhoto,
+  handleFocus,
+  heartRef,
+  posted,
+}) => {
   const {
     user: { uid: userId = "" },
   } = useContext(UserContext);
@@ -51,7 +60,7 @@ const Actions = ({ docId, totlaLikes, likedPhoto, handleFocus, heartRef }) => {
     <>
       {toggleLiked !== null ? (
         <>
-          <div className="flex justify-between px-4 py-2">
+          <div className="flex justify-between items-center px-3 pb-2">
             <div className="flex">
               <div
                 ref={heartRef}
@@ -76,7 +85,7 @@ const Actions = ({ docId, totlaLikes, likedPhoto, handleFocus, heartRef }) => {
                   viewBox="0 0 24 24"
                   stroke="currentColor"
                   tabIndex={0}
-                  className={`w-8 mr-4 select-none cursor-pointer ${
+                  className={`w-8 mr-3 select-none cursor-pointer ${
                     toggleLiked
                       ? "fill-red text-red-primary"
                       : "text-black-light"
@@ -114,13 +123,19 @@ const Actions = ({ docId, totlaLikes, likedPhoto, handleFocus, heartRef }) => {
                   d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
                 />
               </motion.svg>
+              <i className="ml-3 far fa-paper-plane fa-lg flex justify-center items-center cursor-pointer"></i>
             </div>
+            <i class="far fa-bookmark fa-lg"></i>
           </div>
-          <div className="p-4 py-0">
+          <div className="px-3 py-0">
             <p className="font-bold">
               {likes === 1 ? `${likes} likes` : `${likes} likes`}
             </p>
           </div>
+          <p className="text-gray-base uppercase text-xs mt-2 mb-3 px-3 opacity-60">
+            {formatDistance(posted, new Date())} ago
+          </p>
+          <AddComments />
         </>
       ) : (
         <div className="flex justify-between px-4 py-2">
@@ -131,7 +146,7 @@ const Actions = ({ docId, totlaLikes, likedPhoto, handleFocus, heartRef }) => {
   );
 };
 
-Actions.propTypes = {
+ProfileAction.propTypes = {
   docId: propTypes.string.isRequired,
   totlaLikes: propTypes.number.isRequired,
   likedPhoto: propTypes.bool.isRequired,
@@ -139,4 +154,4 @@ Actions.propTypes = {
   heartRef: propTypes.object,
 };
 
-export default memo(Actions);
+export default memo(ProfileAction);

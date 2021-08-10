@@ -1,4 +1,4 @@
-import { memo, useState } from "react";
+import { memo } from "react";
 import Skeleton from "react-loading-skeleton";
 import usePhotos from "../hooks/use-photos";
 import Post from "./post";

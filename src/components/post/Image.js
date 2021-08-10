@@ -2,7 +2,7 @@ import propTypes from "prop-types";
 import * as React from "react";
 import { motion, useMotionValue, useAnimation } from "framer-motion";
 
-const Image = ({ src, caption, heartRef, handleClick, docId }) => {
+const Image = ({ src, caption, heartRef }) => {
   const animation = useAnimation();
   const imgAnimation = useAnimation();
 
@@ -13,9 +13,6 @@ const Image = ({ src, caption, heartRef, handleClick, docId }) => {
     },
     visible: {
       opacity: 1,
-      transition: {
-        duration: 1,
-      },
     },
   };
   async function sequence() {
@@ -51,9 +48,6 @@ const Image = ({ src, caption, heartRef, handleClick, docId }) => {
       <motion.div
         className="absolute w-96 h-96 flex justify-center items-center"
         style={{ x }}
-        // drag="x"
-        // dragElastic={0.16}
-        // dragConstraints={{ left: 0, right: 0 }}
       >
         <motion.svg
           xmlns="http://www.w3.org/2000/svg"

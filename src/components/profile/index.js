@@ -36,7 +36,7 @@ const UserProfile = ({ user }) => {
         followerCount={followerCount}
         setFollowerCount={dispatch}
       />
-      <Photos photos={photosCollection} />
+      <Photos photos={photosCollection} user={user} />
     </>
   );
 };

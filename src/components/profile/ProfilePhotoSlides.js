@@ -1,10 +1,26 @@
 import { AnimatePresence, motion } from "framer-motion";
+import { useEffect } from "react";
+import { useRef, useState } from "react";
+import reactImageSize from "react-image-size";
+import ProfileAction from "./ProfileAction";
+import Image from "../post/Image";
+import {
+  getIfSomeoneLikeThisPhoto,
+  getOnePhotoDetail,
+} from "../../services/firebase";
+import PhotoSlideComments from "../post/PhotoSlideComments";
+
 const ProfilePhotoSlides = ({
   photos,
   nowPhotoidx,
   clickDiv,
   setNowPhotoidx,
+  user,
 }) => {
+  const [photoDetail, setPhotoDetail] = useState(null);
+  const [ifILikedThisPhoto, setIfILikedThisPhoto] = useState(null);
+  const heartRef = useRef(null);
+  const divSizeRef = useRef(null);
   const backdrop = {
     visible: {
       opacity: 1,
@@ -24,56 +40,113 @@ const ProfilePhotoSlides = ({
       },
     },
   };
+  // const [ratio, setRatio] = useState(null);
+  // reactImageSize(photos[nowPhotoidx].imageSrc).then(({ width, height }) => {
+  //   setRatio(height / width);
+  // });
+  useEffect(() => {
+    if (photos[nowPhotoidx].docId !== undefined) {
+      getIfSomeoneLikeThisPhoto(photos[nowPhotoidx].docId, user.userId).then(
+        (res) => setIfILikedThisPhoto(res)
+      );
+    }
+  }, [nowPhotoidx]);
+
+  useEffect(() => {
+    if (ifILikedThisPhoto !== null) {
+      console.log(ifILikedThisPhoto);
+    }
+  }, [ifILikedThisPhoto]);
+  useEffect(() => {
+    getOnePhotoDetail(photos[nowPhotoidx].docId).then((res) =>
+      setPhotoDetail(res)
+    );
+  }, []);
   return (
     <AnimatePresence exitBeforeEnter>
       <motion.div
-        className="top-0 left-0 w-full h-full fixed z-20 flex items-center justify-center bg-black-faded"
+        className="top-0 left-0 w-full h-full fixed z-20 flex items-center justify-center bg-black-faded font-stix"
         variants={backdrop}
         initial="hidden"
         animate="visible"
         exit="hidden"
       >
-        <div
-          className="rounded-full bg-gray-postBorder mr-4 w-7 h-7 flex items-center justify-center bg-opacity-30 cursor-pointer"
-          onClick={() => {
-            nowPhotoidx === 0
-              ? setNowPhotoidx(photos.length - 1)
-              : setNowPhotoidx(nowPhotoidx - 1);
-          }}
-        >
-          <i className="fas fa-chevron-left fa-lg"></i>
-        </div>
-        <motion.div className="w-6/12 flex" variants={modal} exit="hidden">
-          <div className="">
-            <motion.img
-              className="cursor-pointer rounded-sm w-full"
-              key={`${photos[nowPhotoidx].imageSrc}.jpg`}
-              src={photos[nowPhotoidx].imageSrc}
-              alt={`${photos[nowPhotoidx].imageSrc}.jpg`}
-              onClick={() => clickDiv.click()}
-            />
-          </div>
-          <motion.div className="bg-gray-postBack w-full">
-            <motion.div className="p-4 flex items-center border border-gray-postBorder">
-              <motion.img
-                className="rounded-full w-10 h-10"
-                src="/images/avatars/12.jpg"
-              />
-              <motion.div className="flex justify-between w-full pl-3 pr-3">
-                <motion.span>Name</motion.span>
-                <motion.span>icon</motion.span>
-              </motion.div>
+        {ifILikedThisPhoto !== null && photoDetail !== null ? (
+          <>
+            <div
+              className="rounded-full mr-4 w-7 h-7 flex items-center justify-center bg-opacity-30 cursor-pointer"
+              onClick={() => {
+                nowPhotoidx === 0
+                  ? setNowPhotoidx(photos.length - 1)
+                  : setNowPhotoidx(nowPhotoidx - 1);
+              }}
+            >
+              <i className="fas fa-chevron-left fa-lg"></i>
+            </div>
+            <motion.div
+              ref={divSizeRef}
+              className="grid grid-cols-3 w-4/6 max-w-screen-lg"
+              variants={modal}
+              exit="hidden"
+            >
+              <div className="col-span-2">
+                <Image
+                  src={photos[nowPhotoidx].imageSrc}
+                  alt={`${photos[nowPhotoidx].imageSrc}.jpg`}
+                  heartRef={heartRef}
+                />
+              </div>
+              <div className="bg-white w-full flex flex-col items-center justify-between col-span-1">
+                <div className="px-3 py-3 flex items-center border border-gray-postBorder w-full">
+                  <img
+                    className="rounded-full w-10 h-10"
+                    src={user.profileImg}
+                    alt="profileSlide"
+                  />
+                  <div className="flex justify-between w-full pl-3 pr-1 items-center">
+                    <span className="text-xm font-bold">{user.username}</span>
+                    <div className="flex justify-center">
+                      <i className="fas fa-ellipsis-h text-black-faded mr-3"></i>
+                      <i
+                        className="fas fa-times text-black-faded cursor-pointer"
+                        onClick={() => clickDiv.click()}
+                      ></i>
+                    </div>
+                  </div>
+                </div>
+                <div className="w-full h-full mt-3">
+                  <PhotoSlideComments
+                    docId={photos[nowPhotoidx].docId}
+                    comments={photoDetail.comments}
+                  />
+                </div>
+                <div className="border border-gray-postBorder pt-3 w-full h-2/5">
+                  <ProfileAction
+                    docId={photos[nowPhotoidx].docId}
+                    totlaLikes={photos[nowPhotoidx].likes.length}
+                    likedPhoto={ifILikedThisPhoto}
+                    heartRef={heartRef}
+                    posted={photoDetail.dateCreated}
+                  />
+                </div>
+              </div>
             </motion.div>
-          </motion.div>
-        </motion.div>
-        <div
-          className="rounded-full bg-gray-postBorder ml-4 w-7 h-7 flex items-center justify-center bg-opacity-30 cursor-pointer"
-          onClick={() => {
-            setNowPhotoidx((nowPhotoidx + 1) % photos.length);
-          }}
-        >
-          <i className="fas fa-chevron-right fa-lg"></i>
-        </div>
+            <div
+              className="rounded-full ml-4 w-7 h-7 flex items-center justify-center bg-opacity-30 cursor-pointer"
+              onClick={() => {
+                setNowPhotoidx((nowPhotoidx + 1) % photos.length);
+              }}
+            >
+              <i className="fas fa-chevron-right fa-lg z-50"></i>
+            </div>
+          </>
+        ) : (
+          <img
+            className="w-20 opacity-50"
+            src="/images/loading.png"
+            alt="loading..."
+          />
+        )}
       </motion.div>
     </AnimatePresence>
   );

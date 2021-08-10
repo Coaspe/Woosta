@@ -3,7 +3,6 @@ import { Route, Redirect } from "react-router";
 import * as ROUTES from "../constants/routes";
 
 const ProtectedRoute = ({ user, children, ...rest }) => {
-  console.log("children", children);
   // children -> Dashboard ect...
   // ...rest -> path, exact ect...
   // user -> useContext(UserContext)

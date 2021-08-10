@@ -34,12 +34,7 @@ export async function getUserByUserId(userId) {
   return user;
 }
 export async function deletePhotos(DocId) {
-  await firebase
-    .firestore()
-    .collection("photos")
-    .doc(DocId)
-    .delete()
-    .then((res) => console.log(res));
+  await firebase.firestore().collection("photos").doc(DocId).delete();
 }
 export async function getSuggestedProfiles(userId, following) {
   const result = await firebase.firestore().collection("users").limit(10).get();
@@ -52,6 +47,28 @@ export async function getSuggestedProfiles(userId, following) {
 }
 export async function getFollowingProfiles(following) {
   return await Promise.all(following.map((person) => getUserByUserId(person)));
+}
+export async function getImageOfComments(comments) {
+  return await Promise.all(
+    comments.map((comment) =>
+      getUserByUsername(comment.displayName.toLowerCase())
+    )
+  );
+}
+export async function getFollowersProfiles(argFollowers, userId) {
+  const user = await getUserByUserId(userId);
+  const tmp = await Promise.all(
+    argFollowers.map((person) => getUserByUserId(person))
+  );
+  return Promise.all(
+    tmp.map((follower) => ({
+      ...follower,
+      IFollow:
+        user[0].following.find((el) => el === follower[0].userId) !== undefined
+          ? true
+          : false,
+    }))
+  );
 }
 
 //  updateLoggedInUserFollowing, updateFollowedUserFollowers
@@ -101,7 +118,9 @@ export async function getPhotos(userId, following) {
     .collection("photos")
     .where("userId", "==", userId)
     .get();
+
   const result = result1.docs.concat(result2.docs);
+
   const userFollowedPhotos = result.map((photo) => ({
     ...photo.data(),
     docId: photo.id,
@@ -139,6 +158,24 @@ export async function getUserPhotosByUsername(username) {
     ...item.data(),
     docId: item.id,
   }));
+}
+export async function getIfSomeoneLikeThisPhoto(photoDocId, userId) {
+  const result = await firebase
+    .firestore()
+    .collection("photos")
+    .doc(photoDocId)
+    .get();
+
+  return result.data().likes.includes(userId);
+}
+export async function getOnePhotoDetail(photoDocId) {
+  const result = await firebase
+    .firestore()
+    .collection("photos")
+    .doc(photoDocId)
+    .get();
+
+  return result.data();
 }
 
 export async function isUserFollowingProfile(
@@ -180,12 +217,7 @@ export async function uploadImage(caption, ImageUrl, userInfo) {
     .then(() => window.location.reload());
 }
 export async function getImage(ImagePath) {
-  await storageRef
-    .child(ImagePath)
-    .getDownloadURL()
-    .then((url) => {
-      console.log(url);
-    });
+  await storageRef.child(ImagePath).getDownloadURL();
 }
 export async function toggleFollow(
   isFollowingProfile,

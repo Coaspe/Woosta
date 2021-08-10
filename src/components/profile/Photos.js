@@ -5,7 +5,7 @@ import { useState } from "react/cjs/react.development";
 import { useRef } from "react";
 import ProfilePhotoSlides from "./ProfilePhotoSlides";
 
-const Photos = ({ photos }) => {
+const Photos = ({ photos, user }) => {
   const [modal, setModal] = useState(false);
   const clickDiv = useRef(null);
   const [nowPhotoidx, setNowPhotoidx] = useState(0);
@@ -28,6 +28,7 @@ const Photos = ({ photos }) => {
           nowPhotoidx={nowPhotoidx}
           clickDiv={clickDiv.current}
           setNowPhotoidx={setNowPhotoidx}
+          user={user}
         />
       ) : null}
       <div className="grid grid-cols-3 gap-8 mt-4 mb-12">
@@ -105,4 +106,5 @@ export default Photos;
 
 Photos.propTypes = {
   photos: propTypes.array.isRequired,
+  user: propTypes.object.isRequired,
 };

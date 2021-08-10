@@ -10,14 +10,12 @@ import Tooltip from "react-bootstrap/Tooltip";
 const Header = () => {
   const { firebase } = useContext(FirebaseContext);
   const { user } = useContext(UserContext);
-  console.log(user.displayName);
   const history = useHistory();
   const [imgimg, setImgImg] = useState("");
   const profileImg = async () => {
     const userProfile = await getUserProflieImg(user);
     setImgImg(userProfile);
   };
-  console.log(user.displayName);
   useEffect(() => {
     profileImg();
   }, []);

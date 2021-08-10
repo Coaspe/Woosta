@@ -8,6 +8,7 @@ import {
   getUserProflieImgByUsername,
   getUserByUsername,
   getFollowingProfiles,
+  getFollowersProfiles,
 } from "../../services/firebase";
 import UserContext from "../../context/user";
 import FirebaseContext from "../../context/firebase";
@@ -18,6 +19,7 @@ import { motion } from "framer-motion";
 import { makeStyles } from "@material-ui/core/styles";
 import Input from "@material-ui/core/Input";
 import Following from "./Following";
+import Followers from "./Followers";
 const Header = ({
   photosCount,
   profile: {
@@ -67,6 +69,10 @@ const Header = ({
   const handleFollowingShow = () => setShowFollowing(true);
   const [asd, setAsd] = useState([]);
 
+  const [showFollowers, setShowFollowers] = useState(false);
+  const handleFollowersClose = () => setShowFollowers(false);
+  const handleFollowersShow = () => setShowFollowers(true);
+  const [followersArray, setFollowersArray] = useState([]);
   useEffect(() => {
     const profileImg = async () => {
       const userProfile = await getUserProflieImgByUsername(profileUsername);
@@ -107,10 +113,16 @@ const Header = ({
   }, [following.length]);
 
   useEffect(() => {
-    if (asd.length > 0) {
-      asd.map((el) => console.log(el[0].username));
+    const followersProfiles = async (argFollowers, userId) => {
+      await getFollowersProfiles(argFollowers, userId).then((res) => {
+        setFollowersArray(res);
+      });
+    };
+
+    if (followers !== []) {
+      followersProfiles(followers, contextUser.uid);
     }
-  }, [asd]);
+  }, [followers.length]);
 
   const handleToggleFollow = async () => {
     setIsFollowingProfile((isFollowingProfile) => !isFollowingProfile);
@@ -125,7 +137,6 @@ const Header = ({
       user.userId
     );
   };
-
   const handleFileOnChange = (event) => {
     event.preventDefault();
     let reader = new FileReader();
@@ -280,6 +291,7 @@ const Header = ({
                 profileDocId={el[0].docId}
                 username={el[0].username}
                 profileId={el[0].userId}
+                profileCaption={el[0].profileCaption}
                 userId={contextUser.uid}
                 loggedInUserDocId={user.docId}
                 setFollowingCount={setFollowingCount}
@@ -294,7 +306,43 @@ const Header = ({
             <Button variant="secondary" onClick={handleFollowingClose}>
               Close
             </Button>
-            <Button variant="primary">Save Changes</Button>
+          </Modal.Footer>
+        </Modal.Body>
+      </Modal>
+      <Modal
+        show={showFollowers}
+        onHide={handleFollowersClose}
+        centered
+        dialogClassName="modal-50w"
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>
+            <p className="font-stix">Followers</p>
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {followersArray.length > 0 ? (
+            followersArray.map((el) => (
+              <Followers
+                profileDocId={el[0].docId}
+                username={el[0].username}
+                profileId={el[0].userId}
+                profileCaption={el[0].profileCaption}
+                userId={contextUser.uid}
+                loggedInUserDocId={user.docId}
+                setFollowingCount={setFollowingCount}
+                IFollow={el.IFollow}
+              />
+            ))
+          ) : (
+            <p className="font-stix text-2xl text-center py-8">
+              No one follow you :(
+            </p>
+          )}
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleFollowersClose}>
+              Close
+            </Button>
           </Modal.Footer>
         </Modal.Body>
       </Modal>
@@ -377,7 +425,7 @@ const Header = ({
                 <span className="font-bold">{photosCount}</span>
                 <span> photos</span>
               </p>
-              <p className="mr-10">
+              <p className="mr-10 cursor-pointer" onClick={handleFollowersShow}>
                 <span className="font-bold">{followerCount ?? 0}</span>
                 {` `}
                 {followerCount === 1 ? "follower" : "followers"}
