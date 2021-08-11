@@ -54,10 +54,11 @@ const Suggestion = ({ userId, following, loggedInUserDocId }) => {
         ))}
       </div>
       <div>
-        <p className="text-xs opacity-50 mt-4">
+        <p className="text-xs opacity-30 mt-4">
           About - Help - Press - API- Jobs- Privacy - Terms - Locations Top
-          Accounts - Hashtags - Language English © 2021 WOOSTAGRAM
+          Accounts - Hashtags - Language English
         </p>
+        <p className="text-xs opacity-30 mt-3">© 2021 WOOSTAGRAM FROM KOREA</p>
       </div>
     </motion.div>
   ) : null;

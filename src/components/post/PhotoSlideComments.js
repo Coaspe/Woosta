@@ -3,13 +3,18 @@ import propTypes from "prop-types";
 import { Link } from "react-router-dom";
 import UserContext from "../../context/user";
 import { useContext } from "react/cjs/react.development";
-import Modal from "react-modal";
 import { firebase, FieldValue } from "../../lib/firebase";
 import { AnimatePresence, motion } from "framer-motion";
 import { getImageOfComments } from "../../services/firebase";
+import Dropdown from "react-bootstrap/Dropdown";
+import Modal from "react-bootstrap/Modal";
+import Button from "react-bootstrap/Button";
 
-const PhotoSlideComments = ({ docId, comments: allComments }) => {
-  console.log(allComments);
+const PhotoSlideComments = ({
+  docId,
+  comments: allComments,
+  user: contextUser,
+}) => {
   const [editCommentValue, setEditCommentValue] = useState("");
   const [commentDetailArray, setCommentDetailArray] = useState(null);
   const { user } = useContext(UserContext);
@@ -51,26 +56,12 @@ const PhotoSlideComments = ({ docId, comments: allComments }) => {
       });
   };
 
-  const customStyles = {
-    content: {
-      top: "50%",
-      left: "50%",
-      right: "auto",
-      bottom: "auto",
-      marginRight: "-50%",
-      transform: "translate(-50%, -50%)",
-    },
-  };
-
-  useEffect(() => {
-    Modal.setAppElement("body");
-  }, []);
   useEffect(() => {
     getImageOfComments(allComments).then((res) => {
       setCommentDetailArray(res);
-      console.log(res[0][0].username);
     });
   }, []);
+
   const commentVariant = {
     hidden: {
       opacity: 0,
@@ -85,99 +76,26 @@ const PhotoSlideComments = ({ docId, comments: allComments }) => {
       opacity: 0,
     },
   };
+  const [show, setShow] = useState(false);
 
-  const deleteEditVariant = {
-    whileHover: {
-      scale: 1.1,
-    },
-    whileTap: {
-      scale: 0.9,
-    },
-  };
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
   return (
     <>
-      <ul className="overflow-scroll">
-        {commentDetailArray !== null
-          ? comments.map((item) => (
-              <AnimatePresence exitBeforeEnter>
-                <motion.li
-                  key={`${item.comment}-${item.displayName}`}
-                  className="mb-4 flex justify-between items-center"
-                  variants={commentVariant}
-                  initial="hidden"
-                  animate="visible"
-                  exit="exit"
-                >
-                  <div className="flex items-center justify-center">
-                    <Link to={`/p/${item.displayName}`}>
-                      <img
-                        className="rounded-full w-10 h-10 mr-3"
-                        src={
-                          commentDetailArray.find(
-                            (el) =>
-                              el[0].username.toLowerCase() ===
-                              item.displayName.toLowerCase()
-                          )[0].profileImg
-                        }
-                        alt="Comment"
-                      />
-                    </Link>
-                    <span className="mr-1 font-bold text-sm">
-                      {item.displayName}
-                    </span>
-                    <span className="text-sm">{item.comment}</span>
-                  </div>
-                  {item.displayName === user.displayName && (
-                    <div>
-                      <motion.button
-                        className="text-red-primary text-xs mr-1"
-                        variants={deleteEditVariant}
-                        whileHover="whileHover"
-                        whileTap="whileTap"
-                        onClick={() => {
-                          setEditOrDelete("DELETE");
-                          openModal();
-                          seteditOrDeleteComment(item.comment);
-                        }}
-                      >
-                        Delete
-                      </motion.button>
-                      <motion.button
-                        className="text-xs opacity-50"
-                        variants={deleteEditVariant}
-                        whileHover="whileHover"
-                        whileTap="whileTap"
-                        onClick={() => {
-                          setEditOrDelete("EDIT");
-                          openModal();
-                          seteditOrDeleteComment(item.comment);
-                        }}
-                      >
-                        Edit
-                      </motion.button>
-                    </div>
-                  )}
-                </motion.li>
-              </AnimatePresence>
-            ))
-          : null}
-      </ul>
-      <Modal
-        isOpen={modalIsOpen}
-        onRequestClose={closeModal}
-        style={customStyles}
-        contentLabel="Example Modal"
-      >
+      <Modal className="font-stix" show={show} onHide={handleClose} centered>
         {editOrDelete === "DELETE" ? (
-          <div className="flex flex-col justify-center items-center font-stix">
-            <span className="text-2xl mb-10">Delete Comment</span>
-            <div className="flex w-full rounded-sm border border-gray-primary p-2">
+          <>
+            <Modal.Header closeButton>
+              <Modal.Title>Delete Comments</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
               <span className="mr-3 font-bold text-xl">{user.displayName}</span>
               <span className="text-xl">{editOrDeleteComment}</span>
-            </div>
-            <div className="w-full flex items-center justify-center mt-10">
-              <button
-                className="mr-1 text-xs text-red-primary"
+            </Modal.Body>
+            <Modal.Footer>
+              <Button
+                variant="secondary"
                 onClick={() => {
                   handleCommentDelete(user.displayName, editOrDeleteComment);
                   setComments(
@@ -185,35 +103,32 @@ const PhotoSlideComments = ({ docId, comments: allComments }) => {
                       (item) => item.comment !== editOrDeleteComment
                     )
                   );
-                  closeModal();
+                  handleClose();
                 }}
               >
-                Delete
-              </button>
-              <button
-                className="text-xs"
-                onClick={() => {
-                  closeModal();
-                }}
-              >
-                Cancle
-              </button>
-            </div>
-          </div>
+                Confirm
+              </Button>
+              <Button variant="secondary" onClick={handleClose}>
+                Close
+              </Button>
+            </Modal.Footer>
+          </>
         ) : (
-          <div className="flex flex-col justify-center items-center">
-            <span className="text-2xl mb-10">Edit Comment</span>
-            <div className="flex w-full justify-between rounded-sm border border-gray-primary p-2">
+          <>
+            <Modal.Header closeButton>
+              <Modal.Title>Edit Comments</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
               <span className="mr-3 font-bold text-xl">{user.displayName}</span>
               <input
                 type="text"
                 placeholder={editOrDeleteComment}
                 onChange={({ target }) => setEditCommentValue(target.value)}
               />
-            </div>
-            <div className="w-full flex items-center justify-center mt-14">
-              <button
-                className="mr-1 text-xs text-red-primary"
+            </Modal.Body>
+            <Modal.Footer>
+              <Button
+                variant="secondary"
                 onClick={() => {
                   handleCommentEdit(
                     user.displayName,
@@ -231,20 +146,102 @@ const PhotoSlideComments = ({ docId, comments: allComments }) => {
                   closeModal();
                 }}
               >
-                Edit
-              </button>
-              <button
-                className="text-xs"
-                onClick={() => {
-                  closeModal();
-                }}
-              >
-                Cancle
-              </button>
-            </div>
-          </div>
+                Confirm
+              </Button>
+              <Button variant="secondary" onClick={handleClose}>
+                Close
+              </Button>
+            </Modal.Footer>
+          </>
         )}
       </Modal>
+
+      <div className="font-stix overflow-y-scroll h-full w-full px-3 mt-3">
+        <ul className="">
+          {commentDetailArray !== null
+            ? comments.map((item) => (
+                <AnimatePresence exitBeforeEnter>
+                  <motion.li
+                    key={`${item.comment}-${item.displayName}`}
+                    className="mb-4 flex justify-between items-center"
+                    variants={commentVariant}
+                    initial="hidden"
+                    animate="visible"
+                    exit="exit"
+                  >
+                    <div className="flex items-center justify-center">
+                      <Link to={`/p/${item.displayName}`}>
+                        <img
+                          className="rounded-full w-10 h-10 mr-3"
+                          src={
+                            commentDetailArray.find(
+                              (el) =>
+                                el[0].username.toLowerCase() ===
+                                item.displayName.toLowerCase()
+                            )[0].profileImg || "/images/user.png"
+                          }
+                          alt="Comment"
+                        />
+                      </Link>
+                      <span className="mr-1 font-bold text-sm">
+                        {item.displayName}
+                      </span>
+                      <span className="text-sm">{item.comment}</span>
+                    </div>
+                    <div>
+                      <Dropdown>
+                        <Dropdown.Toggle
+                          className="bg-transparent border-none w-10"
+                          variant="success"
+                          id="dropdown-basic"
+                        >
+                          <i className="fas fa-ellipsis-h text-black-faded"></i>
+                        </Dropdown.Toggle>
+
+                        <Dropdown.Menu className="bg-white rounded-sm border">
+                          {contextUser.username.toLowerCase() ===
+                          item.displayName.toLowerCase() ? (
+                            <>
+                              <Dropdown.Item
+                                className=""
+                                onClick={() => {
+                                  setEditOrDelete("DELETE");
+                                  handleShow();
+                                  seteditOrDeleteComment(item.comment);
+                                }}
+                              >
+                                <i className="far fa-trash-alt mr-2"></i>
+                                <span className="text-xs">Delete</span>
+                              </Dropdown.Item>
+                              <Dropdown.Item
+                                className="w-full"
+                                onClick={() => {
+                                  setEditOrDelete("EDIT");
+                                  handleShow();
+                                  seteditOrDeleteComment(item.comment);
+                                }}
+                              >
+                                <i className="far fa-edit mr-1.5"></i>
+                                <span className="text-xs">Edit</span>
+                              </Dropdown.Item>
+                            </>
+                          ) : (
+                            <>
+                              <Dropdown.Item className="">
+                                <i className="far fa-flag mr-1.5"></i>
+                                <span className="text-xs">Report</span>
+                              </Dropdown.Item>
+                            </>
+                          )}
+                        </Dropdown.Menu>
+                      </Dropdown>
+                    </div>
+                  </motion.li>
+                </AnimatePresence>
+              ))
+            : null}
+        </ul>
+      </div>
     </>
   );
 };

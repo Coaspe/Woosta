@@ -1,8 +1,9 @@
 import propTypes from "prop-types";
 import * as React from "react";
 import { motion, useMotionValue, useAnimation } from "framer-motion";
+import { useEffect } from "react";
 
-const Image = ({ src, caption, heartRef }) => {
+const ProfileImage = ({ src, caption, heartRef, setTargetHeight }) => {
   const animation = useAnimation();
   const imgAnimation = useAnimation();
 
@@ -28,6 +29,12 @@ const Image = ({ src, caption, heartRef }) => {
 
     heartRef.current.click();
   }
+  useEffect(() => {
+    const targetTag = document.getElementById("targetYes");
+    if (targetTag !== undefined) {
+      setTargetHeight(targetTag.clientHeight);
+    }
+  }, [setTargetHeight]);
   return (
     <motion.div
       id="targetYes"
@@ -67,11 +74,12 @@ const Image = ({ src, caption, heartRef }) => {
   );
 };
 
-Image.propTypes = {
+ProfileImage.propTypes = {
   src: propTypes.string.isRequired,
   caption: propTypes.string.isRequired,
   heartRef: propTypes.object,
   handleClick: propTypes.func,
   docId: propTypes.string,
+  setTargetHeight: propTypes.func.isRequired,
 };
-export default Image;
+export default ProfileImage;
