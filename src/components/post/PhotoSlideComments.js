@@ -21,13 +21,6 @@ const PhotoSlideComments = ({
   const [editOrDeleteComment, seteditOrDeleteComment] = useState("");
   const [comments, setComments] = useState(allComments);
   const [editOrDelete, setEditOrDelete] = useState("");
-  const [modalIsOpen, setIsOpen] = useState(false);
-  function openModal() {
-    setIsOpen(true);
-  }
-  function closeModal() {
-    setIsOpen(false);
-  }
 
   const handleCommentDelete = async (displayName, comment) => {
     await firebase
@@ -143,7 +136,7 @@ const PhotoSlideComments = ({
                     displayName: user.displayName,
                   });
                   setComments(tmp);
-                  closeModal();
+                  handleClose();
                 }}
               >
                 Confirm
@@ -163,7 +156,7 @@ const PhotoSlideComments = ({
                 <AnimatePresence exitBeforeEnter>
                   <motion.li
                     key={`${item.comment}-${item.displayName}`}
-                    className="mb-4 flex justify-between items-center"
+                    className="mb-4 flex justify-between items-center group"
                     variants={commentVariant}
                     initial="hidden"
                     animate="visible"
@@ -195,7 +188,7 @@ const PhotoSlideComments = ({
                           variant="success"
                           id="dropdown-basic"
                         >
-                          <i className="fas fa-ellipsis-h text-black-faded"></i>
+                          <i className="fas fa-ellipsis-h text-black-faded opacity-0 group-hover:opacity-100"></i>
                         </Dropdown.Toggle>
 
                         <Dropdown.Menu className="bg-white rounded-sm border">

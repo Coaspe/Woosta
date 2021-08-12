@@ -115,7 +115,7 @@ const Comments = ({ docId, comments: allComments, posted, commentInput }) => {
               <AnimatePresence exitBeforeEnter>
                 <motion.div
                   key={`${item.comment}-${item.displayName}`}
-                  className="mb-1 flex justify-between"
+                  className="mb-1 flex justify-between group"
                   variants={commentVariant}
                   initial="hidden"
                   animate="visible"
@@ -127,8 +127,8 @@ const Comments = ({ docId, comments: allComments, posted, commentInput }) => {
                     </Link>
                     <span>{item.comment}</span>
                   </div>
-                  {item.displayName === user.displayName && (
-                    <div>
+                  {item.displayName === user.displayName ? (
+                    <div className="opacity-0 group-hover:opacity-100">
                       <motion.button
                         className="text-red-primary text-xs mr-1"
                         variants={deleteEditVariant}
@@ -156,6 +156,18 @@ const Comments = ({ docId, comments: allComments, posted, commentInput }) => {
                         Edit
                       </motion.button>
                     </div>
+                  ) : (
+                    <div className="opacity-0 group-hover:opacity-100">
+                      <motion.button
+                        className="text-red-primary text-xs mr-1"
+                        variants={deleteEditVariant}
+                        whileHover="whileHover"
+                        whileTap="whileTap"
+                        onClick={() => {}}
+                      >
+                        Report
+                      </motion.button>
+                    </div>
                   )}
                 </motion.div>
               </AnimatePresence>
@@ -164,7 +176,7 @@ const Comments = ({ docId, comments: allComments, posted, commentInput }) => {
               <AnimatePresence exitBeforeEnter>
                 <motion.div
                   key={`${item.comment}-${item.displayName}`}
-                  className="mb-1 flex justify-between"
+                  className="mb-1 flex justify-between group"
                   variants={commentVariant}
                   initial="hidden"
                   animate="visible"
@@ -176,8 +188,8 @@ const Comments = ({ docId, comments: allComments, posted, commentInput }) => {
                     </Link>
                     <span>{item.comment}</span>
                   </div>
-                  {item.displayName === user.displayName && (
-                    <div>
+                  {item.displayName === user.displayName ? (
+                    <div className="opacity-0 group-hover:opacity-100">
                       <motion.button
                         className="text-red-primary text-xs mr-1"
                         variants={deleteEditVariant}
@@ -203,6 +215,18 @@ const Comments = ({ docId, comments: allComments, posted, commentInput }) => {
                         }}
                       >
                         Edit
+                      </motion.button>
+                    </div>
+                  ) : (
+                    <div className="opacity-0 group-hover:opacity-100">
+                      <motion.button
+                        className="text-red-primary text-xs mr-1"
+                        variants={deleteEditVariant}
+                        whileHover="whileHover"
+                        whileTap="whileTap"
+                        onClick={() => {}}
+                      >
+                        Report
                       </motion.button>
                     </div>
                   )}

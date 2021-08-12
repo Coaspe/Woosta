@@ -2,6 +2,10 @@ import propTypes from "prop-types";
 import * as React from "react";
 import { motion, useMotionValue, useAnimation } from "framer-motion";
 import { useEffect } from "react";
+import "@tensorflow/tfjs-backend-cpu";
+import "@tensorflow/tfjs-backend-webgl";
+import * as cocoSsd from "@tensorflow-models/coco-ssd";
+import { useState } from "react/cjs/react.development";
 
 const ProfileImage = ({ src, caption, heartRef, setTargetHeight }) => {
   const animation = useAnimation();
@@ -29,12 +33,43 @@ const ProfileImage = ({ src, caption, heartRef, setTargetHeight }) => {
 
     heartRef.current.click();
   }
+  const [targetTag, setTargetTag] = useState(null);
   useEffect(() => {
-    const targetTag = document.getElementById("targetYes");
-    if (targetTag !== undefined) {
+    const targetTagTmp = document.getElementById("targetYes");
+    if (targetTag) {
+      setTargetTag(targetTagTmp);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (targetTag !== null) {
       setTargetHeight(targetTag.clientHeight);
     }
-  }, [setTargetHeight]);
+  }, [targetTag]);
+
+  const [imgCheck, setImgCheck] = useState(null);
+  const [change, setChange] = useState(true);
+  useEffect(() => {
+    const img = document.getElementById("img");
+    if (img) {
+      setImgCheck(img);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (imgCheck !== null) {
+      (async () => {
+        const model = await cocoSsd.load();
+        await model.detect(imgCheck).then((res) => {
+          if (res.length === 0) {
+            setChange(!change);
+          } else {
+            console.log("res", res);
+          }
+        });
+      })();
+    }
+  }, [imgCheck, change]);
   return (
     <motion.div
       id="targetYes"
@@ -44,6 +79,7 @@ const ProfileImage = ({ src, caption, heartRef, setTargetHeight }) => {
       animate="visible"
     >
       <motion.img
+        id="img"
         animate={imgAnimation}
         onDoubleClick={() => {
           sequence();
@@ -51,6 +87,7 @@ const ProfileImage = ({ src, caption, heartRef, setTargetHeight }) => {
         src={src}
         alt={caption}
         className="w-full"
+        crossOrigin="anonymous"
       />
       <motion.div
         className="absolute w-96 h-96 flex justify-center items-center"
