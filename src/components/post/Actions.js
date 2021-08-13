@@ -46,7 +46,6 @@ const Actions = ({ docId, totlaLikes, likedPhoto, handleFocus, heartRef }) => {
   useEffect(() => {
     setToggleLiked(likedPhoto);
   }, [likedPhoto]);
-  console.log("toggleLiked", toggleLiked);
   return (
     <>
       {toggleLiked !== null ? (

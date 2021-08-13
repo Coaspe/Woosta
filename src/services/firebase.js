@@ -154,10 +154,12 @@ export async function getUserPhotosByUsername(username) {
     .where("userId", "==", user.userId)
     .get();
 
-  return result.docs.map((item) => ({
-    ...item.data(),
-    docId: item.id,
-  }));
+  return result.docs
+    .map((item) => ({
+      ...item.data(),
+      docId: item.id,
+    }))
+    .sort((a, b) => b.dateCreated - a.dateCreated);
 }
 export async function getIfSomeoneLikeThisPhoto(photoDocId, userId) {
   const result = await firebase

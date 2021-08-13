@@ -2,6 +2,15 @@ module.exports = {
   purge: [],
   darkMode: "class", // or 'media' or 'class'
   theme: {
+    minHeight: {
+      0: "0",
+      "1/4": "25%",
+      "1/2": "50%",
+      "60/60": "60%",
+      "70/70": "70%",
+      "3/4": "75%",
+      full: "100%",
+    },
     extend: {
       fontFamily: {
         serif: "Merriweather",

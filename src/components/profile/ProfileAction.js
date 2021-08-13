@@ -55,7 +55,6 @@ const ProfileAction = ({
   useEffect(() => {
     setToggleLiked(likedPhoto);
   }, [likedPhoto]);
-  console.log("toggleLiked", toggleLiked);
   return (
     <>
       {toggleLiked !== null ? (

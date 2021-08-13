@@ -5,9 +5,11 @@ import { useEffect } from "react";
 import "@tensorflow/tfjs-backend-cpu";
 import "@tensorflow/tfjs-backend-webgl";
 import * as cocoSsd from "@tensorflow-models/coco-ssd";
-import { useState } from "react/cjs/react.development";
-
-const ProfileImage = ({ src, caption, heartRef, setTargetHeight }) => {
+import { useRef, useState } from "react/cjs/react.development";
+import Overlay from "react-bootstrap/Overlay";
+import Tooltip from "react-bootstrap/Tooltip";
+import DetectionOverlay from "./DetectionOverlay";
+const ProfileImage = ({ nowPhotoidx, src, caption, heartRef }) => {
   const animation = useAnimation();
   const imgAnimation = useAnimation();
 
@@ -33,19 +35,6 @@ const ProfileImage = ({ src, caption, heartRef, setTargetHeight }) => {
 
     heartRef.current.click();
   }
-  const [targetTag, setTargetTag] = useState(null);
-  useEffect(() => {
-    const targetTagTmp = document.getElementById("targetYes");
-    if (targetTag) {
-      setTargetTag(targetTagTmp);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (targetTag !== null) {
-      setTargetHeight(targetTag.clientHeight);
-    }
-  }, [targetTag]);
 
   const [imgCheck, setImgCheck] = useState(null);
   const [change, setChange] = useState(true);
@@ -55,40 +44,59 @@ const ProfileImage = ({ src, caption, heartRef, setTargetHeight }) => {
       setImgCheck(img);
     }
   }, []);
-
+  const [detection, setDetection] = useState(null);
   useEffect(() => {
     if (imgCheck !== null) {
-      (async () => {
-        const model = await cocoSsd.load();
-        await model.detect(imgCheck).then((res) => {
-          if (res.length === 0) {
-            setChange(!change);
-          } else {
-            console.log("res", res);
-          }
-        });
-      })();
+      try {
+        (async () => {
+          const model = await cocoSsd.load();
+          await model.detect(imgCheck).then((res) => {
+            if (res.length === 0) {
+              setChange(!change);
+            } else {
+              console.log("res", res);
+              setDetection(res);
+            }
+          });
+        })();
+      } catch (error) {
+        console.log("Detection Error!", error);
+      }
     }
-  }, [imgCheck, change]);
+  }, [imgCheck, change, nowPhotoidx]);
+  const [show, setShow] = useState(false);
   return (
     <motion.div
-      id="targetYes"
-      className="flex items-center justify-center"
+      className="flex items-center justify-center h-full bg-opacity-50 bg-gray-background"
       variants={va}
       initial="hidden"
       animate="visible"
     >
-      <motion.img
-        id="img"
-        animate={imgAnimation}
-        onDoubleClick={() => {
-          sequence();
-        }}
-        src={src}
-        alt={caption}
-        className="w-full"
-        crossOrigin="anonymous"
-      />
+      <div className="relative">
+        {detection !== null
+          ? detection.map((item) => (
+              <DetectionOverlay item={item} show={show} />
+            ))
+          : null}
+        <motion.img
+          id="img"
+          animate={imgAnimation}
+          onDoubleClick={() => {
+            sequence();
+          }}
+          src={src}
+          alt={caption}
+          crossOrigin="anonymous"
+        />
+
+        <i
+          className="cursor-pointer fas fa-robot fa-lg absolute"
+          style={{ left: 5, bottom: 5 }}
+          onClick={() => {
+            setShow(!show);
+          }}
+        ></i>
+      </div>
       <motion.div
         className="absolute w-96 h-96 flex justify-center items-center"
         style={{ x }}
@@ -117,6 +125,5 @@ ProfileImage.propTypes = {
   heartRef: propTypes.object,
   handleClick: propTypes.func,
   docId: propTypes.string,
-  setTargetHeight: propTypes.func.isRequired,
 };
 export default ProfileImage;

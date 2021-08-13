@@ -39,10 +39,7 @@ const ProfilePhotoSlides = ({
       },
     },
   };
-  // const [ratio, setRatio] = useState(null);
-  // reactImageSize(photos[nowPhotoidx].imageSrc).then(({ width, height }) => {
-  //   setRatio(height / width);
-  // });
+
   useEffect(() => {
     if (photos[nowPhotoidx].docId !== undefined) {
       getIfSomeoneLikeThisPhoto(photos[nowPhotoidx].docId, user.userId).then(
@@ -56,8 +53,6 @@ const ProfilePhotoSlides = ({
       setPhotoDetail(res)
     );
   }, []);
-
-  const [targetHeight, setTargetHeight] = useState(null);
   return (
     <AnimatePresence exitBeforeEnter>
       <motion.div
@@ -81,56 +76,51 @@ const ProfilePhotoSlides = ({
             </div>
             <motion.div
               ref={divSizeRef}
-              className="grid grid-cols-3 w-full max-w-screen-lg z-30"
+              className="grid grid-cols-3 w-full h-auto max-w-screen-lg z-30 min-h-70/70"
               variants={modal}
               exit="hidden"
             >
               <div className="col-span-2">
                 <ProfileImage
+                  nowPhotoidx={nowPhotoidx}
                   src={photos[nowPhotoidx].imageSrc}
                   alt={`${photos[nowPhotoidx].imageSrc}.jpg`}
                   heartRef={heartRef}
-                  setTargetHeight={setTargetHeight}
                 />
               </div>
-              <>
-                <div
-                  className="bg-white w-full flex flex-col items-center col-span-1 justify-between"
-                  style={{ height: targetHeight }}
-                >
-                  <div className="px-3 py-3 flex items-center border border-gray-postBorder w-full">
-                    <img
-                      className="rounded-full w-10 h-10"
-                      src={user.profileImg}
-                      alt="profileSlide"
-                    />
-                    <div className="flex justify-between w-full pl-3 pr-1 items-center">
-                      <span className="text-xm font-bold">{user.username}</span>
-                      <div className="flex justify-center">
-                        <i className="fas fa-ellipsis-h text-black-faded mr-3"></i>
-                        <i
-                          className="fas fa-times text-black-faded cursor-pointer"
-                          onClick={() => clickDiv.click()}
-                        ></i>
-                      </div>
+              <div className="bg-white w-full flex flex-col items-center col-span-1 justify-between h-full">
+                <div className="px-3 py-3 flex items-center border border-gray-postBorder w-full">
+                  <img
+                    className="rounded-full w-10 h-10"
+                    src={user.profileImg}
+                    alt="profileSlide"
+                  />
+                  <div className="flex justify-between w-full pl-3 pr-1 items-center">
+                    <span className="text-xm font-bold">{user.username}</span>
+                    <div className="flex justify-center">
+                      <i className="fas fa-ellipsis-h text-black-faded mr-3"></i>
+                      <i
+                        className="fas fa-times text-black-faded cursor-pointer"
+                        onClick={() => clickDiv.click()}
+                      ></i>
                     </div>
                   </div>
-                  <PhotoSlideComments
-                    docId={photos[nowPhotoidx].docId}
-                    comments={photoDetail.comments}
-                    user={user}
-                  />
-                  <div className="border border-gray-postBorder pt-3 w-full">
-                    <ProfileAction
-                      docId={photos[nowPhotoidx].docId}
-                      totlaLikes={photos[nowPhotoidx].likes.length}
-                      likedPhoto={ifILikedThisPhoto}
-                      heartRef={heartRef}
-                      posted={photoDetail.dateCreated}
-                    />
-                  </div>
                 </div>
-              </>
+                <PhotoSlideComments
+                  docId={photos[nowPhotoidx].docId}
+                  comments={photoDetail.comments}
+                  user={user}
+                />
+                <div className="border border-gray-postBorder pt-3 w-full">
+                  <ProfileAction
+                    docId={photos[nowPhotoidx].docId}
+                    totlaLikes={photos[nowPhotoidx].likes.length}
+                    likedPhoto={ifILikedThisPhoto}
+                    heartRef={heartRef}
+                    posted={photoDetail.dateCreated}
+                  />
+                </div>
+              </div>
             </motion.div>
             <div
               className="rounded-full ml-4 w-7 h-7 flex items-center justify-center bg-opacity-30 cursor-pointer"
