@@ -1,4 +1,4 @@
-import { useContext, useEffect, memo } from "react";
+import { useContext, useEffect, memo, useRef } from "react";
 import FirebaseContext from "../context/firebase";
 import { getUserProflieImg } from "../services/firebase";
 import { Link, useHistory } from "react-router-dom";
@@ -7,7 +7,7 @@ import * as ROUTES from "../constants/routes";
 import { useState } from "react";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
-const Header = () => {
+const Header = ({ setModal, divRef }) => {
   const { firebase } = useContext(FirebaseContext);
   const { user } = useContext(UserContext);
   const history = useHistory();
@@ -81,14 +81,19 @@ const Header = () => {
                     />
                   </svg>
                 </button>
-                <Link to="/posting">
-                  <OverlayTrigger
-                    placement="bottom"
-                    overlay={
-                      <Tooltip id={`tooltip-bottom`}>
-                        <p className="font-stix text-sm font-thin">New Post</p>
-                      </Tooltip>
-                    }
+                <OverlayTrigger
+                  placement="bottom"
+                  overlay={
+                    <Tooltip id={`tooltip-bottom`}>
+                      <p className="font-stix text-sm font-thin">New Post</p>
+                    </Tooltip>
+                  }
+                >
+                  <div
+                    ref={divRef}
+                    onClick={() => {
+                      setModal((modal) => !modal);
+                    }}
                   >
                     <svg
                       className="w-6 mr-5 text-black-light cursor-pointer"
@@ -100,8 +105,8 @@ const Header = () => {
                       <path d="m256 384c-8.832031 0-16-7.167969-16-16v-224c0-8.832031 7.167969-16 16-16s16 7.167969 16 16v224c0 8.832031-7.167969 16-16 16zm0 0" />
                       <path d="m453.332031 512h-394.664062c-32.363281 0-58.667969-26.304688-58.667969-58.667969v-394.664062c0-32.363281 26.304688-58.667969 58.667969-58.667969h394.664062c32.363281 0 58.667969 26.304688 58.667969 58.667969v394.664062c0 32.363281-26.304688 58.667969-58.667969 58.667969zm-394.664062-480c-14.699219 0-26.667969 11.96875-26.667969 26.667969v394.664062c0 14.699219 11.96875 26.667969 26.667969 26.667969h394.664062c14.699219 0 26.667969-11.96875 26.667969-26.667969v-394.664062c0-14.699219-11.96875-26.667969-26.667969-26.667969zm0 0" />
                     </svg>
-                  </OverlayTrigger>
-                </Link>
+                  </div>
+                </OverlayTrigger>
                 <div className="flex items-center cursor-pointer">
                   <Link to={`/p/${user.displayName}`}>
                     <img

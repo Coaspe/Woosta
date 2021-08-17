@@ -8,6 +8,7 @@ import Comments from "./Comments";
 import { motion } from "framer-motion";
 
 const Post = ({ content }) => {
+  console.log("content", content);
   const divRef = useRef(null);
   const commentInput = useRef(null);
   const heartRef = useRef(null);

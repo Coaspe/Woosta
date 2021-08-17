@@ -5,11 +5,9 @@ import { useEffect } from "react";
 import "@tensorflow/tfjs-backend-cpu";
 import "@tensorflow/tfjs-backend-webgl";
 import * as cocoSsd from "@tensorflow-models/coco-ssd";
-import { useRef, useState } from "react/cjs/react.development";
-import Overlay from "react-bootstrap/Overlay";
-import Tooltip from "react-bootstrap/Tooltip";
+import { useState } from "react";
 import DetectionOverlay from "./DetectionOverlay";
-const ProfileImage = ({ nowPhotoidx, src, caption, heartRef }) => {
+const ProfileImage = ({ nowPhotoidx, src, caption, heartRef, detection }) => {
   const animation = useAnimation();
   const imgAnimation = useAnimation();
 
@@ -35,35 +33,7 @@ const ProfileImage = ({ nowPhotoidx, src, caption, heartRef }) => {
 
     heartRef.current.click();
   }
-
-  const [imgCheck, setImgCheck] = useState(null);
-  const [change, setChange] = useState(true);
-  useEffect(() => {
-    const img = document.getElementById("img");
-    if (img) {
-      setImgCheck(img);
-    }
-  }, []);
-  const [detection, setDetection] = useState(null);
-  useEffect(() => {
-    if (imgCheck !== null) {
-      try {
-        (async () => {
-          const model = await cocoSsd.load();
-          await model.detect(imgCheck).then((res) => {
-            if (res.length === 0) {
-              setChange(!change);
-            } else {
-              console.log("res", res);
-              setDetection(res);
-            }
-          });
-        })();
-      } catch (error) {
-        console.log("Detection Error!", error);
-      }
-    }
-  }, [imgCheck, change, nowPhotoidx]);
+  console.log(detection);
   const [show, setShow] = useState(false);
   return (
     <motion.div
@@ -73,7 +43,7 @@ const ProfileImage = ({ nowPhotoidx, src, caption, heartRef }) => {
       animate="visible"
     >
       <div className="relative">
-        {detection !== null
+        {detection !== undefined
           ? detection.map((item) => (
               <DetectionOverlay item={item} show={show} />
             ))
@@ -86,12 +56,13 @@ const ProfileImage = ({ nowPhotoidx, src, caption, heartRef }) => {
           }}
           src={src}
           alt={caption}
-          crossOrigin="anonymous"
         />
 
         <i
-          className="cursor-pointer fas fa-robot fa-lg absolute"
-          style={{ left: 5, bottom: 5 }}
+          className={`cursor-pointer fas fa-robot fa-lg absolute ${
+            detection === undefined ? "hidden" : null
+          }`}
+          style={{ left: 7, bottom: 7 }}
           onClick={() => {
             setShow(!show);
           }}

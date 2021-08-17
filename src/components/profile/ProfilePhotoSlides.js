@@ -18,8 +18,8 @@ const ProfilePhotoSlides = ({
 }) => {
   const [photoDetail, setPhotoDetail] = useState(null);
   const [ifILikedThisPhoto, setIfILikedThisPhoto] = useState(null);
+
   const heartRef = useRef(null);
-  const divSizeRef = useRef(null);
   const backdrop = {
     visible: {
       opacity: 1,
@@ -53,6 +53,7 @@ const ProfilePhotoSlides = ({
       setPhotoDetail(res)
     );
   }, []);
+  console.log(photoDetail);
   return (
     <AnimatePresence exitBeforeEnter>
       <motion.div
@@ -75,13 +76,13 @@ const ProfilePhotoSlides = ({
               <i className="fas fa-chevron-left fa-lg"></i>
             </div>
             <motion.div
-              ref={divSizeRef}
               className="grid grid-cols-3 w-full h-auto max-w-screen-lg z-30 min-h-70/70"
               variants={modal}
               exit="hidden"
             >
               <div className="col-span-2">
                 <ProfileImage
+                  detection={photoDetail.detection}
                   nowPhotoidx={nowPhotoidx}
                   src={photos[nowPhotoidx].imageSrc}
                   alt={`${photos[nowPhotoidx].imageSrc}.jpg`}

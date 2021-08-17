@@ -1,10 +1,16 @@
 import propTypes from "prop-types";
 import * as React from "react";
 import { motion, useMotionValue, useAnimation } from "framer-motion";
+import "@tensorflow/tfjs-backend-cpu";
+import "@tensorflow/tfjs-backend-webgl";
+import { useState } from "react";
+import DetectionOverlay from "./DetectionOverlay";
 
 const Image = ({ src, caption, heartRef }) => {
   const animation = useAnimation();
   const imgAnimation = useAnimation();
+  const [detection, setDetection] = useState(null);
+  const [show, setShow] = useState(false);
 
   const x = useMotionValue(0);
   const va = {
@@ -28,6 +34,7 @@ const Image = ({ src, caption, heartRef }) => {
 
     heartRef.current.click();
   }
+
   return (
     <motion.div
       id="targetYes"
@@ -36,15 +43,31 @@ const Image = ({ src, caption, heartRef }) => {
       initial="hidden"
       animate="visible"
     >
-      <motion.img
-        animate={imgAnimation}
-        onDoubleClick={() => {
-          sequence();
-        }}
-        src={src}
-        alt={caption}
-        className="w-full"
-      />
+      <div className="relative">
+        {detection !== null
+          ? detection.map((item) => (
+              <DetectionOverlay item={item} show={show} />
+            ))
+          : null}
+        <motion.img
+          id={src}
+          animate={imgAnimation}
+          onDoubleClick={() => {
+            sequence();
+          }}
+          src={src}
+          alt={caption}
+          className="w-full"
+          crossOrigin="anonymous"
+        />
+        {/* <i
+          className="cursor-pointer fas fa-robot fa-lg absolute"
+          style={{ left: 5, bottom: 5 }}
+          onClick={() => {
+            setShow(!show);
+          }}
+        ></i> */}
+      </div>
       <motion.div
         className="absolute w-96 h-96 flex justify-center items-center"
         style={{ x }}
