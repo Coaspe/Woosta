@@ -6,10 +6,9 @@ import "@tensorflow/tfjs-backend-webgl";
 import { useState } from "react";
 import DetectionOverlay from "./DetectionOverlay";
 
-const Image = ({ src, caption, heartRef }) => {
+const Image = ({ src, caption, heartRef, detection, iconRef }) => {
   const animation = useAnimation();
   const imgAnimation = useAnimation();
-  const [detection, setDetection] = useState(null);
   const [show, setShow] = useState(false);
 
   const x = useMotionValue(0);
@@ -44,7 +43,7 @@ const Image = ({ src, caption, heartRef }) => {
       animate="visible"
     >
       <div className="relative">
-        {detection !== null
+        {detection !== undefined
           ? detection.map((item) => (
               <DetectionOverlay item={item} show={show} />
             ))
@@ -60,13 +59,14 @@ const Image = ({ src, caption, heartRef }) => {
           className="w-full"
           crossOrigin="anonymous"
         />
-        {/* <i
-          className="cursor-pointer fas fa-robot fa-lg absolute"
-          style={{ left: 5, bottom: 5 }}
+        <div
+          ref={iconRef}
+          className="absolute"
+          style={{ left: 7, bottom: 7 }}
           onClick={() => {
             setShow(!show);
           }}
-        ></i> */}
+        ></div>
       </div>
       <motion.div
         className="absolute w-96 h-96 flex justify-center items-center"

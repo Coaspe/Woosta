@@ -6,7 +6,15 @@ import { motion, useAnimation } from "framer-motion";
 import { useEffect } from "react";
 import Skeleton from "react-loading-skeleton";
 
-const Actions = ({ docId, totlaLikes, likedPhoto, handleFocus, heartRef }) => {
+const Actions = ({
+  docId,
+  totlaLikes,
+  likedPhoto,
+  handleFocus,
+  heartRef,
+  iconRef,
+  detection,
+}) => {
   const {
     user: { uid: userId = "" },
   } = useContext(UserContext);
@@ -51,7 +59,7 @@ const Actions = ({ docId, totlaLikes, likedPhoto, handleFocus, heartRef }) => {
       {toggleLiked !== null ? (
         <>
           <div className="flex justify-between px-4 py-2">
-            <div className="flex">
+            <div className="flex items-center">
               <div
                 ref={heartRef}
                 onClick={() => {
@@ -113,6 +121,19 @@ const Actions = ({ docId, totlaLikes, likedPhoto, handleFocus, heartRef }) => {
                   d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
                 />
               </motion.svg>
+              <motion.img
+                variants={svgVariant}
+                whileHover="whileHover"
+                whileTap="whileTap"
+                src="/images/ai.png"
+                alt="ai"
+                className={`w-6 h-6 cursor-pointer ml-4 ${
+                  detection === undefined ? "hidden" : null
+                }`}
+                onClick={() => {
+                  iconRef.current.click();
+                }}
+              />
             </div>
           </div>
           <div className="p-4 py-0">

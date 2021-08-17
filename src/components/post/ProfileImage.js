@@ -1,13 +1,9 @@
 import propTypes from "prop-types";
 import * as React from "react";
 import { motion, useMotionValue, useAnimation } from "framer-motion";
-import { useEffect } from "react";
-import "@tensorflow/tfjs-backend-cpu";
-import "@tensorflow/tfjs-backend-webgl";
-import * as cocoSsd from "@tensorflow-models/coco-ssd";
 import { useState } from "react";
 import DetectionOverlay from "./DetectionOverlay";
-const ProfileImage = ({ nowPhotoidx, src, caption, heartRef, detection }) => {
+const ProfileImage = ({ src, caption, heartRef, detection, iconRef }) => {
   const animation = useAnimation();
   const imgAnimation = useAnimation();
 
@@ -33,7 +29,6 @@ const ProfileImage = ({ nowPhotoidx, src, caption, heartRef, detection }) => {
 
     heartRef.current.click();
   }
-  console.log(detection);
   const [show, setShow] = useState(false);
   return (
     <motion.div
@@ -57,16 +52,14 @@ const ProfileImage = ({ nowPhotoidx, src, caption, heartRef, detection }) => {
           src={src}
           alt={caption}
         />
-
-        <i
-          className={`cursor-pointer fas fa-robot fa-lg absolute ${
-            detection === undefined ? "hidden" : null
-          }`}
+        <div
+          ref={iconRef}
+          className="absolute"
           style={{ left: 7, bottom: 7 }}
           onClick={() => {
             setShow(!show);
           }}
-        ></i>
+        ></div>
       </div>
       <motion.div
         className="absolute w-96 h-96 flex justify-center items-center"

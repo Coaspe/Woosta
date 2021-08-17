@@ -74,7 +74,6 @@ const Posting = ({ setModal, divRef }) => {
             if (res.length === 0) {
               setChange(!change);
             } else {
-              console.log("res", res);
               setDetection(res);
             }
           });

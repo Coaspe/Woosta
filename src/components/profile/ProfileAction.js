@@ -9,6 +9,8 @@ import AddComments from "../post/Add-comment";
 import { formatDistance } from "date-fns";
 
 const ProfileAction = ({
+  iconRef,
+  detection,
   docId,
   totlaLikes,
   likedPhoto,
@@ -60,7 +62,7 @@ const ProfileAction = ({
       {toggleLiked !== null ? (
         <>
           <div className="flex justify-between items-center px-3 pb-2">
-            <div className="flex">
+            <div className="flex items-center">
               <div
                 ref={heartRef}
                 onClick={() => {
@@ -122,7 +124,25 @@ const ProfileAction = ({
                   d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
                 />
               </motion.svg>
-              <i className="ml-3 far fa-paper-plane fa-lg flex justify-center items-center cursor-pointer"></i>
+              <motion.i
+                className="ml-3 far fa-paper-plane fa-lg flex justify-center items-center cursor-pointer"
+                variants={svgVariant}
+                whileHover="whileHover"
+                whileTap="whileTap"
+              ></motion.i>
+              <motion.img
+                variants={svgVariant}
+                whileHover="whileHover"
+                whileTap="whileTap"
+                src="/images/ai.png"
+                alt="ai"
+                className={`w-6 h-6 cursor-pointer ml-4 ${
+                  detection === undefined ? "hidden" : null
+                }`}
+                onClick={() => {
+                  iconRef.current.click();
+                }}
+              />
             </div>
             <i class="far fa-bookmark fa-lg"></i>
           </div>

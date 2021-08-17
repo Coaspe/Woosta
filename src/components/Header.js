@@ -1,4 +1,4 @@
-import { useContext, useEffect, memo, useRef } from "react";
+import { useContext, useEffect, memo } from "react";
 import FirebaseContext from "../context/firebase";
 import { getUserProflieImg } from "../services/firebase";
 import { Link, useHistory } from "react-router-dom";
@@ -12,11 +12,11 @@ const Header = ({ setModal, divRef }) => {
   const { user } = useContext(UserContext);
   const history = useHistory();
   const [imgimg, setImgImg] = useState("");
-  const profileImg = async () => {
-    const userProfile = await getUserProflieImg(user);
-    setImgImg(userProfile);
-  };
   useEffect(() => {
+    const profileImg = async () => {
+      const userProfile = await getUserProflieImg(user);
+      setImgImg(userProfile);
+    };
     profileImg();
   }, []);
   return (

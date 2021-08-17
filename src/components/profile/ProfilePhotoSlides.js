@@ -18,6 +18,7 @@ const ProfilePhotoSlides = ({
 }) => {
   const [photoDetail, setPhotoDetail] = useState(null);
   const [ifILikedThisPhoto, setIfILikedThisPhoto] = useState(null);
+  const iconRef = useRef(null);
 
   const heartRef = useRef(null);
   const backdrop = {
@@ -46,14 +47,11 @@ const ProfilePhotoSlides = ({
         (res) => setIfILikedThisPhoto(res)
       );
     }
-  }, [nowPhotoidx]);
-
-  useEffect(() => {
     getOnePhotoDetail(photos[nowPhotoidx].docId).then((res) =>
       setPhotoDetail(res)
     );
-  }, []);
-  console.log(photoDetail);
+  }, [nowPhotoidx]);
+
   return (
     <AnimatePresence exitBeforeEnter>
       <motion.div
@@ -82,8 +80,8 @@ const ProfilePhotoSlides = ({
             >
               <div className="col-span-2">
                 <ProfileImage
+                  iconRef={iconRef}
                   detection={photoDetail.detection}
-                  nowPhotoidx={nowPhotoidx}
                   src={photos[nowPhotoidx].imageSrc}
                   alt={`${photos[nowPhotoidx].imageSrc}.jpg`}
                   heartRef={heartRef}
@@ -114,6 +112,8 @@ const ProfilePhotoSlides = ({
                 />
                 <div className="border border-gray-postBorder pt-3 w-full">
                   <ProfileAction
+                    iconRef={iconRef}
+                    detection={photoDetail.detection}
                     docId={photos[nowPhotoidx].docId}
                     totlaLikes={photos[nowPhotoidx].likes.length}
                     likedPhoto={ifILikedThisPhoto}

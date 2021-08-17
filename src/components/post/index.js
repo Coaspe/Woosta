@@ -8,10 +8,10 @@ import Comments from "./Comments";
 import { motion } from "framer-motion";
 
 const Post = ({ content }) => {
-  console.log("content", content);
   const divRef = useRef(null);
   const commentInput = useRef(null);
   const heartRef = useRef(null);
+  const iconRef = useRef(null);
   const handleFocus = () => commentInput.current.focus();
   const handleClick = () => heartRef.current.click();
   //components
@@ -41,6 +41,8 @@ const Post = ({ content }) => {
         docId={content.docId}
       />
       <Image
+        iconRef={iconRef}
+        detection={content.detection}
         docId={content.docId}
         src={content.imageSrc}
         caption={content.caption}
@@ -48,6 +50,8 @@ const Post = ({ content }) => {
         handleClick={handleClick}
       />
       <Actions
+        detection={content.detection}
+        iconRef={iconRef}
         docId={content.docId}
         totlaLikes={content.likes.length}
         likedPhoto={content.userLikedPhoto}
