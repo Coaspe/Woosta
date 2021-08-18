@@ -2,13 +2,7 @@ import { useState, useContext } from "react";
 import propTypes from "prop-types";
 import FirebaseContext from "../../context/firebase";
 import UserContext from "../../context/user";
-const AddComments = ({
-  docId,
-  comments,
-  setComments,
-  commentInput,
-  setCommentExpanded,
-}) => {
+const AddPhotoSlideComment = ({ docId, comments, setComments }) => {
   const [comment, setComment] = useState("");
   const { firebase, FieldValue } = useContext(FirebaseContext);
   console.log("comments", comments);
@@ -48,7 +42,6 @@ const AddComments = ({
           placeholder="Add a comment ..."
           value={comment}
           onChange={({ target }) => setComment(target.value)}
-          ref={commentInput}
         />
         <button
           className={`text-sm font-bold text-blue-medium ${
@@ -58,7 +51,6 @@ const AddComments = ({
           disabled={comment.length < 1}
           onClick={() => {
             handleSubmitComment();
-            setCommentExpanded(true);
           }}
         >
           Post
@@ -67,9 +59,9 @@ const AddComments = ({
     </div>
   );
 };
-export default AddComments;
+export default AddPhotoSlideComment;
 
-AddComments.propTypes = {
+AddPhotoSlideComment.propTypes = {
   docId: propTypes.string.isRequired,
   comments: propTypes.array.isRequired,
   setComments: propTypes.func.isRequired,

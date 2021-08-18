@@ -5,7 +5,7 @@ import UserContext from "../../context/user";
 import { motion, useAnimation } from "framer-motion";
 import { useEffect } from "react";
 import Skeleton from "react-loading-skeleton";
-import AddComments from "../post/Add-comment";
+import AddPhotoSlideComment from "../post/Add-photoSlideComment";
 import { formatDistance } from "date-fns";
 
 const ProfileAction = ({
@@ -17,6 +17,8 @@ const ProfileAction = ({
   handleFocus,
   heartRef,
   posted,
+  setComments,
+  comments,
 }) => {
   const {
     user: { uid: userId = "" },
@@ -154,7 +156,11 @@ const ProfileAction = ({
           <p className="text-gray-base uppercase text-xs mt-2 mb-3 px-3 opacity-60">
             {formatDistance(posted, new Date())} ago
           </p>
-          <AddComments />
+          <AddPhotoSlideComment
+            docId={docId}
+            comments={comments}
+            setComments={setComments}
+          />
         </>
       ) : (
         <div className="flex justify-between px-4 py-2">
