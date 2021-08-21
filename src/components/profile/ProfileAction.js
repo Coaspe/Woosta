@@ -139,7 +139,9 @@ const ProfileAction = ({
                 src="/images/ai.png"
                 alt="ai"
                 className={`w-6 h-6 cursor-pointer ml-4 ${
-                  detection === undefined ? "hidden" : null
+                  detection === undefined || detection.length === 0
+                    ? "hidden"
+                    : null
                 }`}
                 onClick={() => {
                   iconRef.current.click();

@@ -6,6 +6,7 @@ import Actions from "./Actions";
 import Footer from "./Footer";
 import Comments from "./Comments";
 import { motion } from "framer-motion";
+import Fade from "react-reveal/Fade";
 
 const Post = ({ content }) => {
   const divRef = useRef(null);
@@ -28,44 +29,47 @@ const Post = ({ content }) => {
     },
   };
   return (
-    <motion.div
-      className="rounded col-span-4 border bg-white border-gray-primary mb-12 font-stix"
-      variants={postVariant}
-      initial="initial"
-      animate="animate"
-      ref={divRef}
-    >
-      <Header
-        username={content.username}
-        reference={divRef}
-        docId={content.docId}
-      />
-      <Image
-        iconRef={iconRef}
-        detection={content.detection}
-        docId={content.docId}
-        src={content.imageSrc}
-        caption={content.caption}
-        heartRef={heartRef}
-        handleClick={handleClick}
-      />
-      <Actions
-        detection={content.detection}
-        iconRef={iconRef}
-        docId={content.docId}
-        totlaLikes={content.likes.length}
-        likedPhoto={content.userLikedPhoto}
-        handleFocus={handleFocus}
-        heartRef={heartRef}
-      />
-      <Footer caption={content.caption} username={content.username} />
-      <Comments
-        docId={content.docId}
-        comments={content.comments}
-        posted={content.dateCreated}
-        commentInput={commentInput}
-      />
-    </motion.div>
+    <Fade cascade>
+      <motion.div
+        className="rounded w-full border bg-white border-gray-primary mb-12 font-stix"
+        variants={postVariant}
+        initial="initial"
+        animate="animate"
+        ref={divRef}
+      >
+        <Header
+          username={content.username}
+          reference={divRef}
+          docId={content.docId}
+        />
+        <Image
+          iconRef={iconRef}
+          detection={content.detection}
+          faceDetection={content.faceDetection}
+          docId={content.docId}
+          src={content.imageSrc}
+          caption={content.caption}
+          heartRef={heartRef}
+          handleClick={handleClick}
+        />
+        <Actions
+          detection={content.detection}
+          iconRef={iconRef}
+          docId={content.docId}
+          totlaLikes={content.likes.length}
+          likedPhoto={content.userLikedPhoto}
+          handleFocus={handleFocus}
+          heartRef={heartRef}
+        />
+        <Footer caption={content.caption} username={content.username} />
+        <Comments
+          docId={content.docId}
+          comments={content.comments}
+          posted={content.dateCreated}
+          commentInput={commentInput}
+        />
+      </motion.div>
+    </Fade>
   );
 };
 

@@ -18,7 +18,7 @@ const Header = ({ setModal, divRef }) => {
       setImgImg(userProfile);
     };
     profileImg();
-  }, []);
+  }, [user]);
   return (
     <header className="h-16 bg-white border-b border-gray-primary mb-8">
       <div className="container mx-auto max-w-screen-lg h-full">

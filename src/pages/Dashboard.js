@@ -11,7 +11,6 @@ const Dashboard = () => {
   const [modal, setModal] = useState(false);
   const divRef = useRef(null);
 
-  console.log(modal);
   return (
     <div className="bg-gray-background">
       <Header setModal={setModal} divRef={divRef} />

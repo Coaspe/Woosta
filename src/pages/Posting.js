@@ -9,6 +9,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { motion } from "framer-motion";
 import * as cocoSsd from "@tensorflow-models/coco-ssd";
 import Spinner from "react-bootstrap/Spinner";
+import * as blazeface from "@tensorflow-models/blazeface";
 
 const useStyles = makeStyles({
   root: {
@@ -23,7 +24,7 @@ const useStylesBtn = makeStyles({
     fontWeight: "bold",
   },
 });
-const Posting = ({ setModal, divRef }) => {
+const Posting = ({ divRef }) => {
   const imgVariant = {
     whileTap: {
       scale: 1.5,
@@ -53,14 +54,16 @@ const Posting = ({ setModal, divRef }) => {
   };
   const [detection, setDetection] = useState(null);
   const [imgCheck, setImgCheck] = useState(null);
-  const [change, setChange] = useState(true);
+  const [singleShortDetector, setSingleShortDetector] = useState(null);
+  const [uploadFaceDetection, setUploadFaceDetection] = useState(null);
+  const tmp = [];
   useEffect(() => {
     const img = document.getElementById("img");
     if (img) {
       setImgCheck(img);
-      console.log(img);
     }
   }, [previewURL]);
+
   useEffect(() => {
     setDetection(null);
   }, [previewURL]);
@@ -69,29 +72,56 @@ const Posting = ({ setModal, divRef }) => {
     if (imgCheck !== null && previewURL !== "/images/gallery.png") {
       try {
         (async () => {
+          const model2 = await blazeface.load();
+          await model2.estimateFaces(imgCheck).then((res) => {
+            setSingleShortDetector(res);
+          });
           const model = await cocoSsd.load();
           await model.detect(imgCheck).then((res) => {
-            if (res.length === 0) {
-              setChange(!change);
-            } else {
-              setDetection(res);
-            }
+            setDetection(res);
           });
         })();
       } catch (error) {
         console.log("Detection Error!", error);
       }
     }
-  }, [imgCheck, change, previewURL]);
+  }, [imgCheck, previewURL]);
 
   useEffect(() => {
-    console.log(divRef.current);
-  }, [divRef]);
+    if (singleShortDetector !== null) {
+      singleShortDetector.map((item) =>
+        tmp.push({
+          landmark: [
+            item.landmarks[0][0],
+            item.landmarks[0][1],
+            item.landmarks[1][0],
+            item.landmarks[1][1],
+            item.landmarks[2][0],
+            item.landmarks[2][1],
+            item.landmarks[3][0],
+            item.landmarks[3][1],
+            item.landmarks[4][0],
+            item.landmarks[4][1],
+            item.landmarks[5][0],
+            item.landmarks[5][1],
+          ],
+          topLeft: item.topLeft,
+          bottomRight: item.bottomRight,
+          probability: item.probability,
+        })
+      );
+      setUploadFaceDetection(tmp);
+    }
+  }, [singleShortDetector]);
+
+  console.log("detection", detection);
+  console.log("singleShortDetector", singleShortDetector);
+  console.log("uploadFaceDetection", uploadFaceDetection);
 
   return (
     <AnimatePresence exitBeforeEnter>
       <motion.div
-        className="top-0 left-0 w-full h-full fixed flex z-0 items-center justify-center bg-black-faded font-stix"
+        className="top-0 left-0 w-full h-full fixed flex z-50 items-center justify-center bg-black-faded font-stix"
         // variants={backdrop}
         initial="hidden"
         animate="visible"
@@ -151,8 +181,9 @@ const Posting = ({ setModal, divRef }) => {
                         }}
                       />
                     </form>
-                    {previewURL !== "/images/gallery.png" &&
-                    detection === null ? (
+                    {previewURL === "/images/gallery.png" ||
+                    detection === null ||
+                    uploadFaceDetection === null ? (
                       <Spinner animation="border" variant="info" />
                     ) : (
                       <button
@@ -191,7 +222,13 @@ const Posting = ({ setModal, divRef }) => {
                       color="default"
                       onClick={() => {
                         // setCaption(inputValue.current["caption"].value);
-                        uploadImage(caption, file, user, detection);
+                        uploadImage(
+                          caption,
+                          file,
+                          user,
+                          detection,
+                          uploadFaceDetection
+                        );
                         history.push("/");
                       }}
                     >

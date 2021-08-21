@@ -12,7 +12,7 @@ import { motion } from "framer-motion";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 
-const Header = ({ username, reference, docId }) => {
+const Header = ({ username, docId }) => {
   const { user } = useContext(UserContext);
   const [imgimg, setImgImg] = useState("");
   const [show, setShow] = useState(false);

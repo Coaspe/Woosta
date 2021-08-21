@@ -197,7 +197,13 @@ export async function isUserFollowingProfile(
 
   return response.userId;
 }
-export async function uploadImage(caption, ImageUrl, userInfo, detection) {
+export async function uploadImage(
+  caption,
+  ImageUrl,
+  userInfo,
+  detection,
+  faceDetection
+) {
   await storageRef.child(`${userInfo.email}/${ImageUrl.name}`).put(ImageUrl);
 
   const imageAccessToken = await storageRef
@@ -216,6 +222,7 @@ export async function uploadImage(caption, ImageUrl, userInfo, detection) {
       likes: [],
       userId: userInfo.uid,
       detection: detection,
+      faceDetection: faceDetection,
     })
     .then(() => window.location.reload());
 }

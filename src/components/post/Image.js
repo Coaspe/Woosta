@@ -5,8 +5,16 @@ import "@tensorflow/tfjs-backend-cpu";
 import "@tensorflow/tfjs-backend-webgl";
 import { useState } from "react";
 import DetectionOverlay from "./DetectionOverlay";
+import FaceDetectionOverlay from "./FaceDetectionOverlay";
 
-const Image = ({ src, caption, heartRef, detection, iconRef }) => {
+const Image = ({
+  src,
+  caption,
+  heartRef,
+  detection,
+  iconRef,
+  faceDetection,
+}) => {
   const animation = useAnimation();
   const imgAnimation = useAnimation();
   const [show, setShow] = useState(false);
@@ -42,10 +50,15 @@ const Image = ({ src, caption, heartRef, detection, iconRef }) => {
       initial="hidden"
       animate="visible"
     >
-      <div className="relative">
+      <div className="relative ">
         {detection !== undefined
           ? detection.map((item) => (
               <DetectionOverlay item={item} show={show} />
+            ))
+          : null}
+        {faceDetection !== undefined
+          ? faceDetection.map((item) => (
+              <FaceDetectionOverlay item={item} show={show} />
             ))
           : null}
         <motion.img

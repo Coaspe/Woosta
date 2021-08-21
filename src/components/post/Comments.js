@@ -163,7 +163,6 @@ const Comments = ({ docId, comments: allComments, posted, commentInput }) => {
                         variants={deleteEditVariant}
                         whileHover="whileHover"
                         whileTap="whileTap"
-                        onClick={() => {}}
                       >
                         Report
                       </motion.button>

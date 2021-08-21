@@ -11,7 +11,6 @@ const AddComments = ({
 }) => {
   const [comment, setComment] = useState("");
   const { firebase, FieldValue } = useContext(FirebaseContext);
-  console.log("comments", comments);
   const {
     user: { displayName },
   } = useContext(UserContext);

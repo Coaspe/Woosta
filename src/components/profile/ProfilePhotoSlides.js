@@ -64,7 +64,6 @@ const ProfilePhotoSlides = ({
       setPhotoDetail(res);
     });
   }, [nowPhotoidx]);
-  console.log("photoDetail", photoDetail);
   return (
     <>
       <Modal show={show} onHide={handleClose}>
@@ -80,7 +79,7 @@ const ProfilePhotoSlides = ({
       </Modal>
       <AnimatePresence exitBeforeEnter>
         <motion.div
-          className="top-0 left-0 w-full h-full fixed z-20 flex items-center justify-center bg-black-faded font-stix"
+          className="top-0 left-0 w-full h-full fixed z-10 flex items-center justify-center bg-black-faded font-stix"
           variants={backdrop}
           initial="hidden"
           animate="visible"
@@ -99,7 +98,7 @@ const ProfilePhotoSlides = ({
                 <i className="fas fa-chevron-left fa-lg"></i>
               </div>
               <motion.div
-                className="grid grid-cols-3 w-full h-auto max-w-screen-lg z-30 min-h-70/70"
+                className="grid grid-cols-3 w-full h-auto max-w-screen-lg z-20 min-h-70/70"
                 variants={modal}
                 exit="hidden"
               >
@@ -110,6 +109,7 @@ const ProfilePhotoSlides = ({
                     src={photos[nowPhotoidx].imageSrc}
                     alt={`${photos[nowPhotoidx].imageSrc}.jpg`}
                     heartRef={heartRef}
+                    faceDetection={photoDetail.faceDetection}
                   />
                 </div>
                 <div className="bg-white w-full flex flex-col items-center col-span-1 justify-between h-full">

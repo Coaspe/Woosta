@@ -3,11 +3,21 @@ import * as React from "react";
 import { motion, useMotionValue, useAnimation } from "framer-motion";
 import { useState } from "react";
 import DetectionOverlay from "./DetectionOverlay";
-const ProfileImage = ({ src, caption, heartRef, detection, iconRef }) => {
+import FaceDetectionOverlay from "./FaceDetectionOverlay";
+
+const ProfileImage = ({
+  src,
+  caption,
+  heartRef,
+  detection,
+  iconRef,
+  faceDetection,
+}) => {
   const animation = useAnimation();
   const imgAnimation = useAnimation();
-
+  console.log(detection, faceDetection);
   const x = useMotionValue(0);
+  const [show, setShow] = useState(false);
   const va = {
     hidden: {
       opacity: 0,
@@ -29,7 +39,7 @@ const ProfileImage = ({ src, caption, heartRef, detection, iconRef }) => {
 
     heartRef.current.click();
   }
-  const [show, setShow] = useState(false);
+  console.log(show);
   return (
     <motion.div
       className="flex items-center justify-center h-full bg-opacity-50 bg-gray-background"
@@ -40,7 +50,12 @@ const ProfileImage = ({ src, caption, heartRef, detection, iconRef }) => {
       <div className="relative">
         {detection !== undefined
           ? detection.map((item) => (
-              <DetectionOverlay item={item} show={show} />
+              <DetectionOverlay item={item} show={show} key={item.id} />
+            ))
+          : null}
+        {faceDetection !== undefined
+          ? faceDetection.map((item) => (
+              <FaceDetectionOverlay item={item} show={show} key={item.id} />
             ))
           : null}
         <motion.img
@@ -85,9 +100,11 @@ const ProfileImage = ({ src, caption, heartRef, detection, iconRef }) => {
 
 ProfileImage.propTypes = {
   src: propTypes.string.isRequired,
-  caption: propTypes.string.isRequired,
+  caption: propTypes.string,
   heartRef: propTypes.object,
   handleClick: propTypes.func,
   docId: propTypes.string,
+  faceDetection: propTypes.object,
+  detection: propTypes.object,
 };
 export default ProfileImage;

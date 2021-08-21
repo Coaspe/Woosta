@@ -10,6 +10,7 @@ const DetectionOverlay = ({ item, show }) => {
         {(props) => (
           <Tooltip id="overlay-example" {...props}>
             {item.class}
+            <p>{Math.round(item.score * 100)}%</p>
           </Tooltip>
         )}
       </Overlay>
@@ -17,8 +18,8 @@ const DetectionOverlay = ({ item, show }) => {
         className="absolute w-1 h-1"
         ref={divRef}
         style={{
-          left: (item.bbox[0] + item.bbox[2]) / 2,
-          top: (item.bbox[1] + item.bbox[3]) / 2,
+          left: (item.bbox[0] * 2 + item.bbox[2]) / 2,
+          top: (item.bbox[1] * 2 + item.bbox[3]) / 2,
         }}
       ></div>
     </>
